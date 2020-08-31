@@ -25,14 +25,14 @@ Split the runtime call `__tgt_target_data_begin_mapper` into its `issue` and `wa
 Moving the `wait` version of `__tgt_target_data_begin_mapper` down as much as possible.
 [Commit](https://github.com/llvm/llvm-project/commit/bd2fa1819b9dc1a863a4b5a8abc540598f56c8f2).
 
+Getting the values stored in the offload arrays passed to `__tgt_target_data_begin_mapper`.
+[Commit](https://github.com/llvm/llvm-project/commit/8931add6170508704007f1a410993e6aec879c01).
+
 Regression test that checks if the runtime function `__tgt_target_data_begin_mapper` is actually split and moved
 correctly.
 [Commit](https://github.com/llvm/llvm-project/commit/6f0d99d2b9b3b8ae96dd91c8988cc067b9c9afb9).
 
 ### Pending for Review
-Getting the values stored in the offload arrays passed to `__tgt_target_data_begin_mapper`.
-[Phabricator review](https://reviews.llvm.org/D86300).
-
 Grouping the setup instructions (`issue`) for the runtime call `__tgt_target_data_begin_mapper`.
 [Phabricator review](https://reviews.llvm.org/D86474).
 
