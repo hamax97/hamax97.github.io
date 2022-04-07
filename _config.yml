@@ -1,5 +1,3 @@
 title: Hamilton Tobon Mosquera's Projects
-description: This website showcases the side projects I've been working on the last years.
-remote_theme: daviddarnes/alembic@main
-plugins:
-- jekyll-remote-theme
+description: This website showcases the side projects I've been working on for the last years.
+theme: jekyll-theme-slate
