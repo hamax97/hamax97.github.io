@@ -1,9 +1,11 @@
 ## Projects
 
-* [GSoC 2020 - Latency Hiding of H2D Memory Transfers - LLVM Project](projects/gsoc2020-llvm/README.md).
+* [2022 - P'UNK AVE Backend Challenge](projects/gsoc2020-llvm/punkave-backend-challenge/README.md).
+* [2020 - GSoC - Latency Hiding of Host to Device Memory Transfers - LLVM Project](projects/gsoc2020-llvm/README.md).
 
 ## About Me
-My name is Hamilton Tobon Mosquera. I am a Senior Computer Science student at
-EAFIT University, Medellin, Colombia. I am passionate about High Performance
-Software Engineering, specially software for embedded systems. I am also a
-nature lover and I am hoping to contribute to the space traveling industry.
+
+I'm a software engineer passionate for acquiring a deep understanding of technology and use
+that understanding to solve complex and interesting problems. I have 1+ year of experience
+testing REST APIs, websites, and event driven architectures using JMeter, Python, and Sitespeed.
+I love nature and hip-hop music.
