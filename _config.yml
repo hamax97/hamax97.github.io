@@ -1,3 +1,5 @@
-theme: jekyll-theme-architect
 title: Hamilton Tobon Mosquera's Projects
-description: Descriptions and links to my programming projects.
+description: This website showcases the side projects I've been working on the last years.
+remote_theme: daviddarnes/alembic@main
+plugins:
+- jekyll-remote-theme
