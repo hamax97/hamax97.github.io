@@ -1,6 +1,7 @@
 ## Projects
 
-* [2022 - P'UNK AVENUE Backend Challenge](projects/punkave-backend-challenge/README.md).
+* [2022 - ASCII Art - NodeJS](projects/ascii-art/README.md).
+* [2022 - P'UNK AVENUE Backend Challenge - NodeJS](projects/punkave-backend-challenge/README.md).
 * [2020 - GSoC - Latency Hiding of Host to Device Memory Transfers - LLVM Project](projects/gsoc2020-llvm/README.md).
 
 ## About Me
