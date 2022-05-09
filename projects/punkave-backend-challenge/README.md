@@ -31,4 +31,3 @@
 
 - [GitHub](https://github.com/hamax97/punkave-backend-challenge).
 - [Detailed description of the challenge](https://github.com/punkave/backend-challenge).
-- Implemented API URL: http://139.144.16.184. This URL works as of April 29th, 2022.

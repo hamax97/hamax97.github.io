@@ -8,6 +8,7 @@ Turns images into ASCII art.
 
 Tech stack used:
 - NodeJS.
+- [Sharp](https://sharp.pixelplumbing.com/).
 - Jest.
 - Joi, for parameter validation.
 
