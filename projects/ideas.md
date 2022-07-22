@@ -24,3 +24,6 @@
    * Communicate constantly to check if the script failed/finished/...;
    * Execute distributedly as multiple armies/...;
    * View interactions between these warrios/ships and fortresses when the script starts;
+
+- Use the New Relic student license to monitor all the services you've created:
+   * [Node.js](https://newrelic.com/blog/best-practices/nodejs-application-monitoring)
