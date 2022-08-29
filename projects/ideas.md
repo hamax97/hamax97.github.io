@@ -27,3 +27,9 @@
 
 - Use the New Relic student license to monitor all the services you've created:
    * [Node.js](https://newrelic.com/blog/best-practices/nodejs-application-monitoring)
+
+- Create my own blockchain to fully understand how it works. Try using go.
+
+- Contribute to the project containerd.
+
+- Create an app that would map pencil strokes in your Galaxy tab to mouse interactions in your computer (for Linux, PC, and Tablet)
