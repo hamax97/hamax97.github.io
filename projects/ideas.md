@@ -35,3 +35,6 @@
 - Create an app that would map pencil strokes in your Galaxy tab to mouse interactions in your computer (for Linux, PC, and Tablet)
 
 - Find a usecase for [Emotiv](https://www.emotiv.com/emotivpro/) and build something, I think it has an API. Endava has partnership too.
+
+- To improve my Ruby skills:
+  * A basic performance testing tool.
