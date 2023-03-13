@@ -38,3 +38,11 @@
 
 - To improve my Ruby skills:
   * A basic performance testing tool.
+
+- A basic web app that allows to:
+  * Search for a Bible passage.
+  * If the user scrolls up/down further the passage requested, the app will request the passages required to fill the scroll.
+  * The user can select the Bible version.
+  * The search bar will be pinned to the top so that if the user scrolls dows the search bar will still be visible.
+  * Use the API: https://scripture.api.bible/
+
