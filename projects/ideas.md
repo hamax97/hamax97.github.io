@@ -46,3 +46,9 @@
   * The search bar will be pinned to the top so that if the user scrolls dows the search bar will still be visible.
   * Use the API: https://scripture.api.bible/
 
+- A hybrid web app that helps memorizing the Scriptures:
+  * Read the booklet: An Approach to Extended Memorization of Scripture.
+  * Include a feature to record the voice and compare against the Scripture verse, if the record matches the verse at least in 90% (or something), then it was successful.
+  * The voice recording and comparison with the verse should happen real-time, like Google translator.
+  * Include daily quotes from the Scriptures or old brothers in the faith as encouragement.
+
