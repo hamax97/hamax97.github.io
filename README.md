@@ -1,5 +1,6 @@
 ## Projects
 
+* [2023 - Coordinates Reader - Ruby](projects/coordinates-reader/README.md)
 * [2023 - Contributions to Metasploit Framework - Ruby](projects/metasploit-framework/README.md).
 * [2022 - ASCII Art - NodeJS](projects/ascii-art/README.md).
 * [2022 - P'UNK AVENUE Backend Challenge - NodeJS](projects/punkave-backend-challenge/README.md).
@@ -8,6 +9,6 @@
 ## About Me
 
 I'm a software engineer passionate for acquiring a deep understanding of technology and use
-that understanding to solve complex and interesting problems. I have 1+ year of experience
+that understanding to solve complex and interesting problems. I have 2 years of experience
 testing REST APIs, websites, and event driven architectures using JMeter, Python, and Sitespeed.
 I love nature and hip-hop music.
