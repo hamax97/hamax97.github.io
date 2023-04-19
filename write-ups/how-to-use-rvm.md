@@ -3,23 +3,23 @@
 <!-- TOC -->
 
 - [How to use RVM - Ruby Version Manager](#how-to-use-rvm---ruby-version-manager)
-        - [Install a ruby version:](#install-a-ruby-version)
-        - [Create a gemset for a specific project or environment:](#create-a-gemset-for-a-specific-project-or-environment)
-        - [Use the gemset whenever you CD into the folder:](#use-the-gemset-whenever-you-cd-into-the-folder)
-        - [Get the GEM_HOME environment variable:](#get-the-gem_home-environment-variable)
-        - [Get the GET_PATH environment variable:](#get-the-get_path-environment-variable)
-        - [Migrate from .rvmrc to .ruby-version it's faster and recommended:](#migrate-from-rvmrc-to-ruby-version-its-faster-and-recommended)
-        - [Docs:](#docs)
+    - [Install a ruby version](#install-a-ruby-version)
+    - [Create a gemset for a specific project or environment](#create-a-gemset-for-a-specific-project-or-environment)
+    - [Use the gemset whenever you CD into the folder](#use-the-gemset-whenever-you-cd-into-the-folder)
+    - [Get the GEM_HOME environment variable](#get-the-gem_home-environment-variable)
+    - [Get the GET_PATH environment variable](#get-the-get_path-environment-variable)
+    - [Migrate from .rvmrc to .ruby-version it's faster and recommended](#migrate-from-rvmrc-to-ruby-version-its-faster-and-recommended)
+    - [Docs](#docs)
 
 <!-- /TOC -->
 
-### Install a ruby version:
+## Install a ruby version
 
 ```bash
 rvm install 3.2.0
 ```
 
-### Create a gemset for a specific project (or environment):
+## Create a gemset for a specific project (or environment)
 
 ```bash
 rvm 3.2.0@project-name --create
@@ -31,7 +31,7 @@ Use gemset:
 rvm use 3.2.0@project-name
 ```
 
-### Use the gemset whenever you CD into the folder:
+## Use the gemset whenever you CD into the folder
 
 1. Add the following to your $HOME/.rvmrc
 
@@ -49,7 +49,7 @@ rvm --ruby-version use 3.2.0@project-name
 
 Gemsets are not supported by other tools, that's why rvm recommends to use separate file (.ruby-gemset).
 
-### Get the GEM_HOME environment variable:
+## Get the GEM_HOME environment variable
 
 This variable points to the place where gems will be installed.
 
@@ -57,7 +57,7 @@ This variable points to the place where gems will be installed.
 rvm gemdir
 ```
 
-### Get the GET_PATH environment variable:
+## Get the GET_PATH environment variable
 
 This variable points to the place**s** where Ruby will look for gems.
 
@@ -65,12 +65,12 @@ This variable points to the place**s** where Ruby will look for gems.
 echo $GEM_PATH
 ```
 
-### Migrate from .rvmrc to .ruby-version (it's faster and recommended):
+## Migrate from .rvmrc to .ruby-version (it's faster and recommended)
 
 ```bash
 rvm rvmrc to ruby-version
 ```
 
-### Docs:
+## Docs
 
 - Typical RVM project workflow: https://rvm.io/workflow/projects

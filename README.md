@@ -9,6 +9,9 @@
 ## Write ups
 
 * [2023 - How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md).
+* [2023 - Ruby on Rails lessons learned](./write-ups/lessons-learned-rails.md).
+* [2023 - Ruby lessons learned](./write-ups/lessons-learned-ruby.md).
+* [2023 - RSpec lessons learned](./write-ups/lessons-learned-rspec.md).
 
 ## About Me
 
