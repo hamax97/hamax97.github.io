@@ -33,21 +33,28 @@ rvm use 3.2.0@project-name
 
 ## Use the gemset whenever you CD into the folder
 
-1. Add the following to your $HOME/.rvmrc
+1. Add the following to your `$HOME/.rvmrc`:
 
-```bash
-export rvm_project_rvmrc=1
-```
+   ```bash
+   export rvm_project_rvmrc=1
+   ```
 
 2. Create the files in your project root directory: `.ruby-version` and `.ruby-gemset`.
 
-Run:
+   Run:
 
-```bash
-rvm --ruby-version use 3.2.0@project-name
-```
+   ```bash
+   rvm --ruby-version use 3.2.0@project-name
+   ```
 
-Gemsets are not supported by other tools, that's why rvm recommends to use separate file (.ruby-gemset).
+   Gemsets are not supported by other tools, that's why rvm recommends to use separate file (.ruby-gemset).
+
+3. Create `Gemfile`:
+
+   ```
+   gem install bundler
+   bundler init
+   ```
 
 ## Get the GEM_HOME environment variable
 
