@@ -6,6 +6,10 @@
 * [2022 - P'UNK AVENUE Backend Challenge - NodeJS](projects/punkave-backend-challenge/README.md).
 * [2020 - GSoC - Latency Hiding of Host to Device Memory Transfers - LLVM Project](projects/gsoc2020-llvm/README.md).
 
+## Write ups
+
+* [2023 - How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md).
+
 ## About Me
 
 I'm a software engineer passionate for acquiring a deep understanding of technology and use
