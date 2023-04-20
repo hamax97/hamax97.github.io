@@ -81,6 +81,7 @@ Extensions:
 - Ruby Test Explorer.
 - Trailing Spaces.
 - Auto Markdown TOC.
+- VSCode vim.
 - TODO: For debugging?
 
 Gems:
@@ -115,7 +116,7 @@ Settings file `.vscode/settings.json`:
 Key shortcuts:
 
 - Go to Spec extension:
-  - Go to spec of file: `Ctrl + Shift + Y`.
+  - Go to spec of file: `Ctrl + Shift + T`.
 
 - Rails Run Specs extension:
   - Run All Specs: `Ctrl + Windows + r`.

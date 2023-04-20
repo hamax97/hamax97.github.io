@@ -1,5 +1,8 @@
 # Lessons learned RSpec
 
+Many of the lessons learned here stated were copied directly from:
+Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshelf, August 2017.
+
 <!-- TOC -->
 
 - [Lessons learned RSpec](#lessons-learned-rspec)
@@ -7,6 +10,7 @@
     - [Main concepts](#main-concepts)
     - [Types of specs](#types-of-specs)
     - [Output colors](#output-colors)
+    - [Filter backtraces to avoid huge backtraces](#filter-backtraces-to-avoid-huge-backtraces)
     - [Format output](#format-output)
     - [Show slowest examples](#show-slowest-examples)
     - [Run only what's needed](#run-only-whats-needed)
@@ -21,6 +25,9 @@
     - [Use editor support to run specs with your keyboard](#use-editor-support-to-run-specs-with-your-keyboard)
     - [Run with Bundler in standalone mode](#run-with-bundler-in-standalone-mode)
     - [Mixins](#mixins)
+    - [Matchers](#matchers)
+        - [contain_exactly](#contain_exactly)
+    - [Doubles](#doubles)
     - [Patterns and Practices](#patterns-and-practices)
 
 <!-- /TOC -->
@@ -46,21 +53,32 @@
   - A `spec` describes the desired behavior of a bit of code.
   - An `example` shows how a particular API is intended to be used.
 
+- RSpec uses the term **test double** to refer to: mocks, stubs, fakes, spies. The difference is rooted
+  in how you use them.
+  - Martin Fowler agrees: [Test Double](https://martinfowler.com/bliki/TestDouble.html).
+
 ## Types of specs
 
 - **Acceptance**: Does the whole system work?
+  - Exercise all layers in the system.
   - Give an extremely important and valuable support when doing big refactorings.
   - Rely only in the product's external interface.
   - More difficult to write, more brittle, and slower.
 
 - **Unit**: Do our objects do the right thing, are they convenient to work with?
+  - Exercise only one layer in isolation at a time.
+  - Focused and fast.
   - Isolated from third party code.
   - Very low level.
   - Help when refactoring objects or methods.
+  - [Martin Fowler's definition](https://martinfowler.com/bliki/UnitTest.html).
 
 - **Integration**: Does our code work against code we can’t change?
   - Allowed to access third party code in the spec.
   - Sit in between Acceptance and Unit specs.
+
+- Useful resources:
+  - [Xavier Shay's - How I test Rails applications](https://rhnh.net/2012/12/20/how-i-test-rails-applications/)
 
 ## Output colors
 
@@ -72,6 +90,21 @@
 
 - If the gem `coderay` is installed, the output with Ruby snippets will be color highlighted as
   in an editor.
+
+## Filter backtraces to avoid huge backtraces
+
+This helps removing gems' backtraces from your backtrace so that you can focus in your application
+code when something fails.
+
+RSpec hides its backtrace info by default.
+
+Use the following config and add the gems as needed:
+
+```ruby
+config.filter_gems_from_backtrace 'rack', 'rack-test', 'sequel', 'sinatra'
+```
+
+To see the full backtrace use the flag `--backtrace` or `-b`.
 
 ## Format output
 
@@ -220,10 +253,33 @@ RSpec.describe 'The nicest description' do
 end
 ```
 
+## Matchers
+
+### contain_exactly
+
+Doesn't regard order. Allows you change order in the collection returned by the API without failing your
+tests. Use `eq([])` instead if order is important.
+
+## Doubles
+
+- RSpec has a feature called **verifying doubles**. This helps preventing **fragile mocks**, which is a
+  problem where specs pass when they should fail because a method is not implemente, but the mock
+  allows it to be used.
+
 ## Patterns and Practices
 
-- Use the 3A's pattern: Arrange/Act/Assert: https://xp123.com/articles/3a-arrange-act-assert/.
-- Better specs: https://www.betterspecs.org/
+- Use the 3A's pattern: [Arrange/Act/Assert](https://xp123.com/articles/3a-arrange-act-assert/).
+
+- [Better specs](https://www.betterspecs.org/).
+
 - To avoind having test suites that force to bounce back and forth all the time between setup
   and examples, be pragmatic, share setup code only when necessary to increase mantainability and
   reduce noise.
+
+- Use dependency injection and avoid hardcoding collaborating objects. This has multiple advantages:
+  - Explicit dependencies: they’re documented right there in the signature of initialize.
+  - Code that’s easier to reason about (no global state).
+  - Libraries that are easier to drop into another project.
+  - More testable code.
+
+- Keep setup code and test code separate. Example: don't move test code to a `before` hook.
