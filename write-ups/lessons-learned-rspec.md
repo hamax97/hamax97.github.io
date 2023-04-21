@@ -29,6 +29,10 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
         - [contain_exactly](#contain_exactly)
     - [Doubles](#doubles)
     - [Patterns and Practices](#patterns-and-practices)
+        - [General](#general)
+        - [Acceptance/Integration/Unit specs](#acceptanceintegrationunit-specs)
+        - [Acceptance/Integration specs: setup test db before each suite](#acceptanceintegration-specs-setup-test-db-before-each-suite)
+        - [Acceptance/Integration specs: solve order dependency issues - around hook - isolating specs](#acceptanceintegration-specs-solve-order-dependency-issues---around-hook---isolating-specs)
 
 <!-- /TOC -->
 
@@ -268,6 +272,8 @@ tests. Use `eq([])` instead if order is important.
 
 ## Patterns and Practices
 
+### General
+
 - Use the 3A's pattern: [Arrange/Act/Assert](https://xp123.com/articles/3a-arrange-act-assert/).
 
 - [Better specs](https://www.betterspecs.org/).
@@ -283,3 +289,83 @@ tests. Use `eq([])` instead if order is important.
   - More testable code.
 
 - Keep setup code and test code separate. Example: don't move test code to a `before` hook.
+
+- Test in random order to find order dependencies. Use `config.order = :random` in `spec_helper.rb`.
+  - To repeat an specific order use the flag `--seed` with the value reported in the previous output.
+  - With the `--bisect` flag rspec will run your specs in groups and try to find where the dependency is.
+
+### Acceptance/Integration/Unit specs
+
+- Have a separate folder for each of them under `spec/`.
+  - `spec/acceptance`.
+  - `spec/integration`.
+  - `spec/unit`.
+
+### Acceptance/Integration specs: setup test db before each suite
+
+For integration and acceptance tests you'll need to setup your test db:
+
+- Add the code to set it up in `spec/support/db.rb`. Or the like. You can use hooks to run code before
+  the suite starts. It should look like:
+
+  ```ruby
+  RSpec.configure do |c|
+    c.before(:suite) do # before suite.
+      Sequel.extension :migration
+      Sequel::Migrator.run(DB, 'db/migrations')
+      DB[:expenses].truncate
+    end
+  end
+  ```
+
+- Load this code from your acceptance or integration specs using `require_relative`.
+- Make sure to make the `DB` object (or whatever you have) available in both the support file
+  and the specs file. For example, you can use `require_relative`.
+
+### Acceptance/Integration specs: solve order dependency issues - around hook - isolating specs
+
+Make sure you leave the shared resources you use in a clean state after each spec. For example a database.
+
+Sorround in **transaction**s specs that issue queries to a database, so that the changed items can be
+**rolledback**. To implement this you can use the `around` hook:
+
+1. In your support file in `spec/support/db.rb` you can add the `around` hook to examples that are
+   tagged with something you define, in this case: `:db`.
+
+   ```ruby
+   RSpec.configure do |c|
+     # ...
+
+     c.around(:example, :db) do |example|
+       # Can run things before.
+       DB.transaction(rollback: :always) { example.run }
+       # Can run things after.
+     end
+   end
+   ```
+
+   `around` hooks run after any `before` context hooks, but before any `before` example hooks, and similarly
+   after any `after` example hooks but before any `after` context hooks.
+
+   The example parameter given to the block should be used to call `run` on it, or `call`, which would
+   allow you to treat example as a `Proc`.
+
+2. You need then to do two things:
+
+   1. Include the support file in your specs files using `require_relative`. More on how to avoid this later.
+   2. Tag the example groups with `:db`, or whatever tag you chose.
+
+3. To avoid requiring always your support file in your specs, you can ask RSpec to do it for you when
+   it finds an spec file that contains an example group or example tagged with `:db`, or your chosen tag:
+
+   In the `spec/spec_helper.rb` file:
+
+   ```ruby
+   RSpec.config do |config|
+   # ...
+    config.when_first_matching_example_defined(:db) do
+      require_relative 'support/db'
+    end
+   # ...
+   end
+   ```
