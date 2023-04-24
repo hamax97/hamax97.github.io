@@ -21,7 +21,8 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
     - [Libraries](#libraries)
         - [rspec-core](#rspec-core)
     - [Drawbacks of instance variables in hooks - Use memoization](#drawbacks-of-instance-variables-in-hooks---use-memoization)
-    - [context](#context)
+    - [Example groups/examples: Aliases for better wording](#example-groupsexamples-aliases-for-better-wording)
+        - [Custom aliases with custom behavior](#custom-aliases-with-custom-behavior)
     - [Use editor support to run specs with your keyboard](#use-editor-support-to-run-specs-with-your-keyboard)
     - [Run with Bundler in standalone mode](#run-with-bundler-in-standalone-mode)
     - [Mixins](#mixins)
@@ -33,6 +34,9 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
         - [Acceptance/Integration/Unit specs](#acceptanceintegrationunit-specs)
         - [Acceptance/Integration specs: setup test db before each suite](#acceptanceintegration-specs-setup-test-db-before-each-suite)
         - [Acceptance/Integration specs: solve order dependency issues - around hook - isolating specs](#acceptanceintegration-specs-solve-order-dependency-issues---around-hook---isolating-specs)
+            - [Run spec files separately](#run-spec-files-separately)
+    - [Hooks](#hooks)
+        - [Order of execution](#order-of-execution)
 
 <!-- /TOC -->
 
@@ -228,9 +232,51 @@ implement them yet:
 
 Taken from `Effective testing with RSpec 3`.
 
-## context
+## Example groups/examples: Aliases for better wording
 
-It's just an alias for `describe`.
+- `context` is an alias for describe.
+- `it` has multiple aliases:
+  - `specify`: useful describing deprecations in your specs.
+  - `example`: useful for data specific specs.
+
+- You can use them in any way you want. The idea is **getting the words right**, which is crucial for BDD.
+
+### Custom aliases with custom behavior
+
+You might want to start the debugger right after the example finishes, but before resources are cleaned up.
+
+Add this to your rspec config:
+
+```ruby
+RSpec.configure do |config|
+  config.alias_example_group_to :debug_describe, pry: true
+  config.alias_example_to :debug_it, pry: true
+
+  config.after(:example, pry: true) do |ex|
+    require 'pry'
+    biding.pry
+  end
+end
+```
+
+- `pry: true` is the metadata that will be attached to the example group or example you declare using
+  the alias `debug_describe` or `debug_it`.
+- The `after` hook is added to all examples containing the `pry: true` metadata.
+
+Now you can use the aliases:
+
+```ruby
+debug_describe CustomClass, 'when accessing db' do
+  # ...
+end
+
+# ...
+debug_it 'when calculating taxes' do
+  # ...
+  # pry will be started here.
+end
+# ...
+```
 
 ## Use editor support to run specs with your keyboard
 
@@ -324,10 +370,10 @@ For integration and acceptance tests you'll need to setup your test db:
 
 ### Acceptance/Integration specs: solve order dependency issues - around hook - isolating specs
 
-Make sure you leave the shared resources you use in a clean state after each spec. For example a database.
+Make sure you leave the shared resources you use in a clean state after each spec.
 
-Sorround in **transaction**s specs that issue queries to a database, so that the changed items can be
-**rolledback**. To implement this you can use the `around` hook:
+For example a database. Sorround in **transaction**s specs that issue queries to a database, so that
+the changed items can be **rolledback**. To implement this you can use the `around` hook:
 
 1. In your support file in `spec/support/db.rb` you can add the `around` hook to examples that are
    tagged with something you define, in this case: `:db`.
@@ -362,10 +408,42 @@ Sorround in **transaction**s specs that issue queries to a database, so that the
 
    ```ruby
    RSpec.config do |config|
-   # ...
-    config.when_first_matching_example_defined(:db) do
-      require_relative 'support/db'
-    end
-   # ...
+     # ...
+     config.when_first_matching_example_defined(:db) do
+       require_relative 'support/db'
+     end
+     # ...
    end
    ```
+
+#### Run spec files separately
+
+```bash
+(for f in `find spec -iname '*_spec.rb'`; do
+​  echo "$f:"
+  bundle exec rspec $f -fp || exit 1
+​done)
+```
+
+## Hooks
+
+- Only use **config hooks** for things that aren’t essential for understanding how your specs work.
+  The bits of logic that isolate each example—such as database transactions or environment
+  sandboxing—are prime candidates.
+
+- `:suite` hooks are only allowed to be defined in the config section of your specs.
+  - Perhaps in `spec_helper.rb`; or
+  - in the `support/` folder.
+
+### Order of execution
+
+- `before` hooks run from the outside in.
+  - Scope modifiers: `:context`, `:example`.
+- `after` hooks run from the inside out.
+  - Scope modifiers: `:context`, `:example`.
+- `around` hooks:
+  - The code **before** the `example.run` will execute from the outside in. Runs before all `before` hooks
+    associated to an example.
+  - The code **after** the `example.run` will run from the inside out. Runs after all `after` hooks
+    associated to an example.
+  - Scope modifiers: `:example`.
