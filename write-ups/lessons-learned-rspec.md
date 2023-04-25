@@ -25,7 +25,9 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
         - [Custom aliases with custom behavior](#custom-aliases-with-custom-behavior)
     - [Use editor support to run specs with your keyboard](#use-editor-support-to-run-specs-with-your-keyboard)
     - [Run with Bundler in standalone mode](#run-with-bundler-in-standalone-mode)
-    - [Mixins](#mixins)
+    - [Sharing code](#sharing-code)
+        - [Mixins](#mixins)
+        - [Shared example groups and shared examples](#shared-example-groups-and-shared-examples)
     - [Matchers](#matchers)
         - [contain_exactly](#contain_exactly)
     - [Doubles](#doubles)
@@ -289,7 +291,8 @@ Important performance improvement when running your specs:
 
 TODO: https://learning.oreilly.com/library/view/effective-testing-with/9781680502770/f_0124.xhtml#sec.bundler
 
-## Mixins
+## Sharing code
+### Mixins
 
 You can **mixin** modules inside an RSpec context, just like in regular Ruby code.
 
@@ -303,11 +306,90 @@ RSpec.describe 'The nicest description' do
 end
 ```
 
+If you want to include a module in **all** example groups:
+
+```ruby
+RSpec.config do |config|
+  config.include Rack::Test::Methods
+end
+```
+
+### Shared example groups and shared examples
+
+Shared example groups and shared examples exist **only** to be shared, that is, to be included from
+other specs.
+
+These are useful if you want to reuse hooks, examples, or let declarations, which are not shareable
+using mixins.
+
+It's a good practice to save your shared specs code under `specs/support` with a meaningful name.
+
+You can use:
+
+- `shared_examples`, `include_examples`, and `it_behaves_like`.
+  - `include_examples` vs `it_behaves_like`:
+    - `include_examples` is like copy and pasting the code. If you include twice the same (with different arguments)
+      you'll have conflicts.
+    - `it_behaves_like` creates a context and includes everything inside that context. If you include
+      twice the same you won't have conflicts. Prefer this if unsure.
+
+- `shared_context` and `include_context`.
+
+Like this:
+
+```ruby
+RSpec.shared_context 'Some Context' do
+# ...
+end
+
+RSpec.describe 'Some feature' do
+  include_context 'Some Context'
+end
+```
+
+Or to include it in all example groups:
+
+```ruby
+RSpec.config do |config|
+  config.include_context 'Some Context'
+end
+```
+
+Or sharing examples only:
+
+```ruby
+# specs/support/bird_behavior.rb
+RSpec.shared_examples 'Bird' do |bird_class|
+  let(:bird) { bird_class.new }
+
+  it 'flies' do
+    expect(bird.fly).to be_flying
+  end
+end
+
+# specs/eagle_spec.rb
+require_relative '../app/eagle'
+require_relative 'support/bird_behavior'
+
+RSpec.describe 'Eagle' do
+  it_behaves_like 'Bird', Eagle
+
+  # or ...
+
+  it_behaves_like 'Bird' do
+    let(:tempfile) { Tempfile.new('/tmp/bird.tmp/') }
+    let(:bird) { SomeSpecialBird.new(tempfile.path) }
+
+    # Remove the let declaration in the shared code if you use this.
+  end
+end
+```
+
 ## Matchers
 
 ### contain_exactly
 
-Doesn't regard order. Allows you change order in the collection returned by the API without failing your
+Doesn't regard order. Allows you to change order in the collection returned by the API without failing your
 tests. Use `eq([])` instead if order is important.
 
 ## Doubles
@@ -339,6 +421,11 @@ tests. Use `eq([])` instead if order is important.
 - Test in random order to find order dependencies. Use `config.order = :random` in `spec_helper.rb`.
   - To repeat an specific order use the flag `--seed` with the value reported in the previous output.
   - With the `--bisect` flag rspec will run your specs in groups and try to find where the dependency is.
+
+- Avoid the Mystery Guest problem: The test reader is not able to see the cause and effect between fixture
+  and verification logic because part of it is done outside the Test Method.
+  Read [this post](https://thoughtbot.com/blog/mystery-guest).
+  - Don't overuse hooks to avoid repetition. It might become a mess.
 
 ### Acceptance/Integration/Unit specs
 
@@ -447,3 +534,5 @@ the changed items can be **rolledback**. To implement this you can use the `arou
   - The code **after** the `example.run` will run from the inside out. Runs after all `after` hooks
     associated to an example.
   - Scope modifiers: `:example`.
+
+TODO: Continuar con When to Use Hooks
