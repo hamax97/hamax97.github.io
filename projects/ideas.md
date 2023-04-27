@@ -58,3 +58,27 @@ of what's happening pops up.
   * To teach Rails?
   * Or to debug rails?
 
+- A performance testing framework that easily integrates into CI/CD pipelines:
+  - Tools: RSpec, Ruby.
+  - Lets you tag specs with something like: `fail_if_slower_than: 0.5`.
+  - Abstract away the concept of spec to something more general like: performance test case, ...
+    - These specs would be something like integration/acceptance specs, but it could also be used with unit specs.
+  - How about adding a memory threshold too?
+
+  - The spec would run:
+    - Ruby code.
+    - A JMeter script.
+    - A k6 script.
+    - ...
+
+  - Idea from Exercises for Chapter 9 in Effective Testing with RSpec 3: https://learning.oreilly.com/library/view/effective-testing-with/9781680502770/f_0080.xhtml#d24e24567
+
+  - Important to consider, comment from reddit:
+
+    ```
+    I think failing right on CI will be disruptive. Somebody could try to get a bug fix in and got interrupted by a slow/flaky test of another person.
+
+    I recommend that you aggregate the test results over many runs and identify which one is consistently slow. Sometimes the CI machine just randomly slows down and a single slow run won't lead you down wrong path.
+
+    Some CI vendor may have this feature of aggregations already. Look into Insights of CircleCI.
+    ```

@@ -7,6 +7,7 @@
     - [Exceptions](#exceptions)
     - [Docker](#docker)
     - [Memoization in accessors](#memoization-in-accessors)
+    - [&:symbol - Symbol to Proc](#symbol---symbol-to-proc)
     - [Setup Ruby in VSCode](#setup-ruby-in-vscode)
 
 <!-- /TOC -->
@@ -63,6 +64,10 @@ docker run --rm -it -h myruby --name myruby ruby:3.2.0 /bin/bash
 
 Docs: https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby-and-one-gem/
 
+## &:symbol - Symbol to Proc
+
+The operator `&` wraps the method pointed at by `:symbol` into a `Proc`.
+
 ## Setup Ruby in VSCode
 
 Extensions:
@@ -81,7 +86,7 @@ Extensions:
 - Ruby Test Explorer.
 - Trailing Spaces.
 - Auto Markdown TOC.
-- VSCode vim.
+- VSCode vim, or VSCode Neovim.
 - TODO: For debugging?
 
 Gems:

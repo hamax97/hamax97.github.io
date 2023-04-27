@@ -20,6 +20,7 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
     - [Mark work in progress](#mark-work-in-progress)
     - [Libraries](#libraries)
         - [rspec-core](#rspec-core)
+        - [rspec-expectations](#rspec-expectations)
     - [Drawbacks of instance variables in hooks - Use memoization](#drawbacks-of-instance-variables-in-hooks---use-memoization)
     - [Example groups/examples: Aliases for better wording](#example-groupsexamples-aliases-for-better-wording)
         - [Custom aliases with custom behavior](#custom-aliases-with-custom-behavior)
@@ -28,6 +29,7 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
     - [Sharing code](#sharing-code)
         - [Mixins](#mixins)
         - [Shared example groups and shared examples](#shared-example-groups-and-shared-examples)
+        - [include, prepend, extend](#include-prepend-extend)
     - [Matchers](#matchers)
         - [contain_exactly](#contain_exactly)
     - [Doubles](#doubles)
@@ -39,6 +41,9 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
             - [Run spec files separately](#run-spec-files-separately)
     - [Hooks](#hooks)
         - [Order of execution](#order-of-execution)
+    - [RSpec.configure](#rspecconfigure)
+        - [Recommendations](#recommendations)
+    - [Auto generated example descriptions](#auto-generated-example-descriptions)
 
 <!-- /TOC -->
 
@@ -52,6 +57,7 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
    ```
 
    Use `bundle exec` to make sure you are using the right `rspec`.
+
 ## Main concepts
 
 - **Example group**: Degined with `RSpec.describe`. Set of related tests.
@@ -215,8 +221,24 @@ implement them yet:
 
 ### rspec-core
 
-- The main parts of the API are: `describe`, `it`, `expect`. With these only, al ot of things can be done.
+- The main parts of the API are: `describe`, `it`, `expect`. With these only, a lot of things can be done.
 - Can be combined with any other testing library.
+
+### rspec-expectations
+
+Allows you to clearly specify what a **subject** is expected to be.
+
+This library can be used in isolation from `rspec-core` and together with anything you want.
+
+How it works:
+
+```ruby
+expect(<subject>).to <matcher>, 'custom failure message'
+```
+
+- `<subject>` an instance of a Ruby class.
+- `<matcher>` a matcher object
+- `expect` wraps the `<subject>` in a friendly adapter that allows you to call `to`, `to_not` or `not_to`.
 
 ## Drawbacks of instance variables in hooks - Use memoization
 
@@ -385,7 +407,59 @@ RSpec.describe 'Eagle' do
 end
 ```
 
+### include, prepend, extend
+
+Use modules in your rspec config:
+
+```ruby
+RSpec.configure do |config|
+  # Brings methods into each example
+  config.include ExtraExampleMethods
+
+  # Brings methods into each example,
+  # overriding methods with the same name
+  # (rarely used)
+  config.prepend ImportantExampleMethods
+
+  # Brings methods into each group (alongside let/describe/etc.)
+  # Useful for adding to RSpec's domain-specific language
+  config.extend ExtraGroupMethods
+end
+```
+
 ## Matchers
+
+Belong to `rspec-expectations` library.
+
+Types:
+- **Primitive** matchers for basic data types like strings, numbers, and so on.
+- **Higher-order** matchers that can take other matchers as input, then (among other uses) apply them across collections
+- **Block** matchers for checking properties of code, including blocks, exceptions, and side effects
+
+Matchers use underneath the Ruby operator `===`, triple equals.
+
+A matcher define a **category** and checks, using `===`, if the value given belongs to that
+category. To express this Ruby does the following:
+
+```ruby
+# Does <value> belong to this <category>?
+# <category> === <value>
+
+a_value_between(1730, 1740) === 1731
+```
+
+Another example:
+
+```ruby
+expect([1, 2, 3]).to start_with((0..2))
+```
+
+- The invocation to `to` will do: `start_with((0..2)) === [1, 2, 3]`
+- The invocation to `start_with((0..2))` will return a **matcher** object.
+- The call to the matcher's object method `===` with `[1, 2, 3]` as argument will do: `(0..2) === [1]`.
+  - To verify that `(0..2)` responds to the message `===`, run: `(0..2).respond_to? '==='`.
+- Like this you can compose matchers, instead of `(0..2)`, you pass the matcher, it will then be
+  will invoked, and lastly its `===` method.
 
 ### contain_exactly
 
@@ -426,6 +500,11 @@ tests. Use `eq([])` instead if order is important.
   and verification logic because part of it is done outside the Test Method.
   Read [this post](https://thoughtbot.com/blog/mystery-guest).
   - Don't overuse hooks to avoid repetition. It might become a mess.
+
+- Use clear custom failure messages when the default failure message is not enough. They should be
+  enough to understand what went wrong so that you can start fixing it right away instead of adding
+  `puts` all over the place.
+  - If the custom message is used repeatedly, you can create a custom matcher.
 
 ### Acceptance/Integration/Unit specs
 
@@ -535,4 +614,80 @@ the changed items can be **rolledback**. To implement this you can use the `arou
     associated to an example.
   - Scope modifiers: `:example`.
 
-TODO: Continuar con When to Use Hooks
+## RSpec.configure
+
+All configurations provided by rspec are available here.
+
+The command line flags don't provide all the configuration options available, only those that are
+most likely to be used and changed.
+
+rspec will combine all the `RSpec.configure` blocks you have in your code base.
+
+### Recommendations
+
+- Put the setup code in `spec/spec_helper.rb` and load it by adding `--require spec_helper` to your
+  `.rspec` file.
+- Be careful with what you load in your `spec/spec_helper.rb`.
+  - Specs that take only a few milliseconds can become multisecond.
+- Use `when_first_matching_example_defined` to load things that are required for specific specs; or
+- you can `require` the libraries you need in the specific spec files you need them.
+
+## Auto generated example descriptions
+
+Use them sparingly. One use-case is when the description generated by rspec is almost exactly
+to what you would've wrote.
+
+You can use `it`, `specify`, `subject`, `is_expected.to`, `is_expected.not_to`.
+
+Examples:
+
+Instead of this:
+```ruby
+RSpec.describe CookieRecipe, '#ingredients' do
+  it 'should include :butter, :milk and :eggs' do
+    expect(CookieRecipe.new.ingredients).to include(:butter, :milk, :eggs)
+  end
+
+  it 'should not include :fish_oil' do
+    expect(CookieRecipe.new.ingredients).not_to include(:fish_oil)
+  end
+end
+```
+
+This:
+```ruby
+RSpec.describe CookieRecipe, '#ingredients' do
+  specify do
+    expect(CookieRecipe.new.ingredients).to include(:butter, :milk, :eggs)
+  end
+
+  specify do
+    expect(CookieRecipe.new.ingredients).not_to include(:fish_oil)
+  end
+end
+
+# Would generate same description for the examples.
+```
+
+Or this:
+
+```ruby
+RSpec.describe CookieRecipe, '#ingredients' do
+  subject { CookieRecipe.new.ingredients }
+  it { is_expected.to include(:butter, :milk, :eggs) }
+  it { is_expected.not_to include(:fish_oil) }
+end
+
+RSpec.describe CookieRecipe, '#ingredients' do
+  subject { CookieRecipe.new.ingredients }
+  it { should include(:butter, :milk, :eggs) }
+  it { should_not include(:fish_oil) }
+end
+
+# Would generate the same description for the examples.
+```
+
+- `subject` is an alias for `let`.
+- `specify` is an alias for `it`.
+- `is_expected` is an alias for `expect(subject)`.
+- `should` and `should_not` are aliases for `expect(subject).to` and `expect(subject).not_to`.
