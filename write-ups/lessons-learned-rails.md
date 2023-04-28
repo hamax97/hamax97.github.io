@@ -4,6 +4,11 @@
 
 - [Ruby on Rails lessons learned](#ruby-on-rails-lessons-learned)
     - [Setup application](#setup-application)
+    - [Add tests with rspec to Rails](#add-tests-with-rspec-to-rails)
+        - [Types of specs](#types-of-specs)
+        - [Recommendations](#recommendations)
+        - [Useful commands](#useful-commands)
+        - [Adding specs](#adding-specs)
     - [Controller's actions naming](#controllers-actions-naming)
     - [Form builders and routes helpers](#form-builders-and-routes-helpers)
     - [Controller's life cycle](#controllers-life-cycle)
@@ -26,6 +31,97 @@
 ```bash
 gem install rails
 rails new app-name
+```
+
+3. Rails has `bundler` support baked in. It will be installed when you install `rails`. If you want
+   you can use the binstub `bin/bundle`.
+
+## Add tests with rspec to Rails
+
+To your Gemfile, in the `:development` and `:test` groups, add:
+
+```ruby
+group :development, :test do
+  # ...
+  gem "rspec-rails", "~> 6.0"
+end
+```
+
+Install with `bundle install`.
+
+Add `rspec` to your project:
+
+```bash
+bin/rails generate rspec:install
+```
+
+This generates:
+
+```
+create  .rspec
+create  spec
+create  spec/spec_helper.rb
+create  spec/rails_helper.rb
+```
+
+- `rails_helper.rb`: contains useful features for testing; it's recommended to include it only the
+  spec files that require rails. It's not loaded by default in `.rspec`.
+
+### Types of specs
+
+- **Integration** tests that drive your app as a black box via its HTTP interface.
+- **Functional** tests to see how your controllers respond to requests.
+- **Unit** tests to drive a single object or layer.
+- **Specific** tests for models, mailers, and background jobs; any given test here may be a unit or integration test.
+
+To test any of these aspects, tag your spec with `type: <type>`. The types provided by `rspec-rails` are:
+
+- [Spec types](https://github.com/rspec/rspec-rails#what-tests-should-i-write).
+
+### Recommendations
+
+- Some of these spec types, such as `:request` and `:model`, will be the bread and butter of your testing.
+  Others are mainly there for edge cases or for backward compatibility, since rspec-rails works with
+  all Rails versions from 3.0 up to the latest release.
+
+- Don't feel pressed to include all types of tests in your app.
+
+- For outside-in acceptance testing:
+  - For HTTP-based APIs, use `request` specs.
+  - For user-facing web applications, add Capybara to the project and use `feature` specs; see
+    Michael Crismali’s article for setup advice.
+
+- For checking major components of your app:
+  - Use `unit` and `integration` specs, without Rails where possible, for your domain objects.
+  - Use `model`, `mailer`, and `job` specs for their respective types of Rails objects.
+
+- Tend to avoid the following types of specs:
+  - `View` specs, which cost more effort than the value they provide; they encourage putting logic in
+    your views, which we like to keep at a minimum.
+  - `Routing` specs, which generally duplicate test coverage from your acceptance specs.
+  - `Controller` specs, which give an overly simplified picture of behavior, have some gotchas
+    around how they bypass Rack middleware, and are being phased out of current Rails practice;
+    use `request` specs instead.
+
+- The list of specs supported by rspec rails is not a checklist:
+  - Ask a hundred developers how to test an application, and you’ll get a hundred different answers.
+  - RSpec Rails provides thoughtfully selected features to encourage good testing practices, but
+    there’s no "right" way to do it. Ultimately, it’s up to you to decide how your test suite will be composed.
+
+### Useful commands
+
+Rebuild test database:
+
+```bash
+bin/rails db:test:prepare
+```
+
+### Adding specs
+
+Add specs for an already existing model:
+
+```bash
+bin/rails generate rspec:model ModelName
 ```
 
 ## Controller's actions naming

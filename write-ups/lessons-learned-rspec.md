@@ -25,7 +25,7 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
     - [Example groups/examples: Aliases for better wording](#example-groupsexamples-aliases-for-better-wording)
         - [Custom aliases with custom behavior](#custom-aliases-with-custom-behavior)
     - [Use editor support to run specs with your keyboard](#use-editor-support-to-run-specs-with-your-keyboard)
-    - [Run with Bundler in standalone mode](#run-with-bundler-in-standalone-mode)
+    - [Run with Bundler in standalone mode - Performance improvement](#run-with-bundler-in-standalone-mode---performance-improvement)
     - [Sharing code](#sharing-code)
         - [Mixins](#mixins)
         - [Shared example groups and shared examples](#shared-example-groups-and-shared-examples)
@@ -307,9 +307,26 @@ end
 - Vim: https://github.com/thoughtbot/vim-rspec
 - VSCode: vscode-run-rspec-file
 
-## Run with Bundler in standalone mode
+## Run with Bundler in standalone mode - Performance improvement
 
 Important performance improvement when running your specs:
+
+```bash
+bundle install --standalone
+# generates bundle/bundler/setup.py should I include this in git?
+# installs all gems under bundle/ruby/
+
+bundle binstubs rspec-core
+# creates a file for executing rspec in bin/
+# how is this bettern than bundle exec rspec ??
+```
+this must be run each time the Gemfile is updated
+
+Add `.bundle` and `/bundle` to your `.gitignore` and `.dockerignore`.
+
+Configure VSCode to use this stub instead of bundle exec rspec.
+
+TODO: instead, use the gem spring-rspec-commands.
 
 TODO: https://learning.oreilly.com/library/view/effective-testing-with/9781680502770/f_0124.xhtml#sec.bundler
 
@@ -505,6 +522,14 @@ tests. Use `eq([])` instead if order is important.
   enough to understand what went wrong so that you can start fixing it right away instead of adding
   `puts` all over the place.
   - If the custom message is used repeatedly, you can create a custom matcher.
+
+- Avoid overspecification: favor loose matchers:
+  Using a loose matcher makes your specs less brittle; it prevents incidental details from causing an
+  unexpected failure.
+
+- Never check for a bare exception:
+  Always include some kind of detail—either a specific custom error class or a snippet from the
+  message—that is unique to the specific raise statement you are testing.
 
 ### Acceptance/Integration/Unit specs
 

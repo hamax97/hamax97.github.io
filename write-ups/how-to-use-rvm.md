@@ -51,7 +51,7 @@ rvm use 3.2.0@project-name
 
 3. Create `Gemfile`:
 
-   ```
+   ```bash
    gem install bundler
    bundler init
    ```
