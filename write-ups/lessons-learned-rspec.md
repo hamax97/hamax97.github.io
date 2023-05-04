@@ -523,6 +523,9 @@ Create them using `double()`.
 - **Spy**: Records the messages it receives, so that you can check them later.
   - Created with `spy`.
   - Allow you to use `have_received` instead of `received`.
+- **Fake**: Takes a working implementation but uses some shortcut that makes it not suitable
+  for production. For example: an in memory test db, or a network api call that simulates
+  some behavior.
 
 ### Origin
 
@@ -545,6 +548,14 @@ Indicate what its underlying Ruby class is:
     - `class_double('<class name>')`
     - `object_double('<class name>')`
     - Each of these has a `..._spy` variant.
+  - Will verify the double only if the class is loaded, if it's not loaded it will behave as a non-verifying double.
+    - Use the constant that points to the class instead of a string. This way you'll be forced to require the
+      file that contains the constant; or
+    - Use the option configuration option `verify_doubled_constant_names` set to `true`. Make sure to have this
+      in a support file under `spec/support` so that you load it on demand. Otherwise, you'll not be able
+      to use verifying doubles without previously having loaded the corresponding class. This will be useful when
+      you give the name of the constant as a string, instead of passing the constant directly. You can then use
+      the flag: `--require support/support_config.rb`.
 
 - **Stubbed constant**: A Ruby constant -such as a class or module name- which you create, remove, or
   replace in a single test.
