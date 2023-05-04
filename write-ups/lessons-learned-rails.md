@@ -64,7 +64,7 @@ create  spec/spec_helper.rb
 create  spec/rails_helper.rb
 ```
 
-- `rails_helper.rb`: contains useful features for testing; it's recommended to include it only the
+- `rails_helper.rb`: contains useful features for testing; it's recommended to include it only in the
   spec files that require rails. It's not loaded by default in `.rspec`.
 
 ### Types of specs

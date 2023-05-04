@@ -21,11 +21,11 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
     - [Libraries](#libraries)
         - [rspec-core](#rspec-core)
         - [rspec-expectations](#rspec-expectations)
-    - [Drawbacks of instance variables in hooks - Use memoization](#drawbacks-of-instance-variables-in-hooks---use-memoization)
+    - [Drawbacks of instance variables in hooks - Use memoization - let](#drawbacks-of-instance-variables-in-hooks---use-memoization---let)
     - [Example groups/examples: Aliases for better wording](#example-groupsexamples-aliases-for-better-wording)
         - [Custom aliases with custom behavior](#custom-aliases-with-custom-behavior)
     - [Use editor support to run specs with your keyboard](#use-editor-support-to-run-specs-with-your-keyboard)
-    - [Run with Bundler in standalone mode - Performance improvement](#run-with-bundler-in-standalone-mode---performance-improvement)
+    - [Use Spring to run tests - Performance improvement](#use-spring-to-run-tests---performance-improvement)
     - [Sharing code](#sharing-code)
         - [Mixins](#mixins)
         - [Shared example groups and shared examples](#shared-example-groups-and-shared-examples)
@@ -33,6 +33,9 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
     - [Matchers](#matchers)
         - [contain_exactly](#contain_exactly)
     - [Doubles](#doubles)
+        - [Usage mode](#usage-mode)
+        - [Origin](#origin)
+                - [Verifying doubles](#verifying-doubles)
     - [Patterns and Practices](#patterns-and-practices)
         - [General](#general)
         - [Acceptance/Integration/Unit specs](#acceptanceintegrationunit-specs)
@@ -240,7 +243,7 @@ expect(<subject>).to <matcher>, 'custom failure message'
 - `<matcher>` a matcher object
 - `expect` wraps the `<subject>` in a friendly adapter that allows you to call `to`, `to_not` or `not_to`.
 
-## Drawbacks of instance variables in hooks - Use memoization
+## Drawbacks of instance variables in hooks - Use memoization - let
 
 - If you misspell the instance variable, Ruby will silently return nil instead of aborting with a
   failure right away. The result is typically a confusing error message about code that’s far away from the typo.
@@ -251,10 +254,9 @@ expect(<subject>).to <matcher>, 'custom failure message'
   examples in the group, even if some of them never use the instance variable. That’s inefficient and can
   be quite noticeable when setting up large or expensive objects.
 
-  - You can use helper methods instead with memoization. The `RSpec.describe` block is Ruby class.
+  - You can use helper methods instead with memoization. The `RSpec.describe` block is a Ruby class.
   - For handling the `nil` or `false` problem in memoization you can use the `let` helper method.
-
-Taken from `Effective testing with RSpec 3`.
+  - `let` caches the value if the same example uses it multiple times, but not across examples.
 
 ## Example groups/examples: Aliases for better wording
 
@@ -307,28 +309,36 @@ end
 - Vim: https://github.com/thoughtbot/vim-rspec
 - VSCode: vscode-run-rspec-file
 
-## Run with Bundler in standalone mode - Performance improvement
+## Use Spring to run tests - Performance improvement
 
-Important performance improvement when running your specs:
+This will be specially useful for big projects or projects with Rails which take too long to load.
+
+Add this gem to the `:development` and `:test` groups:
+
+```ruby
+gem "spring-commands-rspec", "~> 1.0"
+```
+
+In the file `config/environments/test.rb`, make sure to have:
+
+```ruby
+config.cache_classes = false
+config.action_view.cache_template_loading = true
+```
+
+Create the stub:
 
 ```bash
-bundle install --standalone
-# generates bundle/bundler/setup.py should I include this in git?
-# installs all gems under bundle/ruby/
-
-bundle binstubs rspec-core
-# creates a file for executing rspec in bin/
-# how is this bettern than bundle exec rspec ??
+bundle exec spring binstub rspec
 ```
-this must be run each time the Gemfile is updated
 
-Add `.bundle` and `/bundle` to your `.gitignore` and `.dockerignore`.
+Execute the tests:
 
-Configure VSCode to use this stub instead of bundle exec rspec.
+```bash
+bin/rspec
+```
 
-TODO: instead, use the gem spring-rspec-commands.
-
-TODO: https://learning.oreilly.com/library/view/effective-testing-with/9781680502770/f_0124.xhtml#sec.bundler
+Enjoy TDD.
 
 ## Sharing code
 ### Mixins
@@ -485,8 +495,73 @@ tests. Use `eq([])` instead if order is important.
 
 ## Doubles
 
+There are a couple of ways to think about test doubles:
+
+- **Usage mode**.
+- **Origin**: how you created it.
+
+Every test double will have both a **usage mode** and an **origin**.
+
+Create them using `double()`.
+
+### Usage mode
+
+- **Stub**: Returns canned responses, avoiding any meaningful computation or I/O.
+  - Best for simulating *query* methods (no side effect).
+  - Args given are ignored.
+  - `allow(<double object>).to receive().and_return()`
+
+- **Mock**: Expects specific messages; raises an error if if doesn't receive them at the end of the example.
+  - Useful to deal with *command* methods (have side effect).
+  - `expect(<double object>).to receive()`
+
+- **Null Object**: A benign test module that can stand in for any object; returns itself in response to any
+  message.
+  - Useful when your double receives many messages and spelling all of them out is not easy.
+  - `double.as_null_object`.
+  - Also known as **black hole**.
+- **Spy**: Records the messages it receives, so that you can check them later.
+  - Created with `spy`.
+  - Allow you to use `have_received` instead of `received`.
+
+### Origin
+
+Indicate what its underlying Ruby class is:
+
+- **Pure double**: Its behavior comes entirely from the test framework.
+
+- **Partial dobule**: An existing Ruby object that takes on some test double behavior; its interface
+  is a mixture of real and fake implementations.
+  - Useful when it's not easy to test injecting dependencies.
+  - Use `allow` or `expect` in a regular Ruby oject to override the behavior of specific messages.
+  - After each example the object is restablished.
+  - Using partial doubles is a **code smell** that might lead to you to bad design decissions.
+
+- **Verifying double**: Totally fake like a pure double, but contrains its interface based on a real object
+  like a partial double.
+  - It's safer because verifies that the double matches the API it's standing for.
+  - Use instead of `double`:
+    - `instance_double('<class name>')`
+    - `class_double('<class name>')`
+    - `object_double('<class name>')`
+    - Each of these has a `..._spy` variant.
+
+- **Stubbed constant**: A Ruby constant -such as a class or module name- which you create, remove, or
+  replace in a single test.
+  - Use `stub_const('SomeModule::SomeConst', <some_value>)`.
+  - This will:
+    - Define a new constant.
+    - Replace an existing constant.
+    - Replace an entire module or class (which are constants).
+    - Avoid loading an expensive class.
+  - Use `hide_const('SomeConst')` to hide the constant.
+    - Useful, for example, when you want to make sure some piece of code doesn't uses a module
+      or class or some other constant.
+
+##### Verifying doubles
+
 - RSpec has a feature called **verifying doubles**. This helps preventing **fragile mocks**, which is a
-  problem where specs pass when they should fail because a method is not implemente, but the mock
+  problem where specs pass when they should fail because a method is not implemented, but the mock
   allows it to be used.
 
 ## Patterns and Practices
@@ -527,7 +602,7 @@ tests. Use `eq([])` instead if order is important.
   Using a loose matcher makes your specs less brittle; it prevents incidental details from causing an
   unexpected failure.
 
-- Never check for a bare exception:
+- Never check for a bare exception raise:
   Always include some kind of detail—either a specific custom error class or a snippet from the
   message—that is unique to the specific raise statement you are testing.
 

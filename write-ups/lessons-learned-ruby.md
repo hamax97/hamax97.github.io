@@ -114,7 +114,10 @@ Settings file `.vscode/settings.json`:
     },
     "ruby.format": "rubocop",
     "ruby.useBundler": true,
-    "auto-close-tag.disableOnLanguage": ["markdown"]
+    "auto-close-tag.disableOnLanguage": ["markdown"],
+    "ruby.specCommand": "bin/rspec",
+    "ruby.specFocusTerminal": false,
+    "ruby.specSaveFile": true
 }
 ```
 
