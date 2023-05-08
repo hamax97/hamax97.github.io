@@ -108,6 +108,12 @@ To test any of these aspects, tag your spec with `type: <type>`. The types provi
   - RSpec Rails provides thoughtfully selected features to encourage good testing practices, but
     there’s no "right" way to do it. Ultimately, it’s up to you to decide how your test suite will be composed.
 
+- Don't use `render_template` or `assert_template` in your specs. These were deprecated and they indicate
+  a code smell.
+  - Don't include the gem `rails-controller-testing` in your Gemfile. These features were externalized
+    to this gem.
+  - Instead test for something different: status code, database changes, response content.
+
 ### Useful commands
 
 Rebuild test database:
@@ -118,10 +124,16 @@ bin/rails db:test:prepare
 
 ### Adding specs
 
-Add specs for an already existing model:
+Add specs for a model:
 
 ```bash
 bin/rails generate rspec:model ModelName
+```
+
+Add requests specs (integration):
+
+```bash
+bin/rails generate rspec:request Video
 ```
 
 ## Controller's actions naming

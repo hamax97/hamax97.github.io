@@ -10,6 +10,7 @@ the video.
 
 - Ruby 3.2.0.
 - Ruby on Rails 7.0.4.
+- RSpec 3.12.
 - Text extraction: Tesseract 5.3.0.
 - Video processing: FFMPEG.
 - Docker.

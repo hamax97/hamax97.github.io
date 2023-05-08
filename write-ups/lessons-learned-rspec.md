@@ -35,7 +35,8 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
     - [Doubles](#doubles)
         - [Usage mode](#usage-mode)
         - [Origin](#origin)
-                - [Verifying doubles](#verifying-doubles)
+            - [Verifying doubles](#verifying-doubles)
+        - [Recommendations](#recommendations)
     - [Patterns and Practices](#patterns-and-practices)
         - [General](#general)
         - [Acceptance/Integration/Unit specs](#acceptanceintegrationunit-specs)
@@ -262,8 +263,22 @@ expect(<subject>).to <matcher>, 'custom failure message'
 
 - `context` is an alias for describe.
 - `it` has multiple aliases:
-  - `specify`: useful describing deprecations in your specs.
+  - `specify`: useful for describing deprecations in your specs. In the output of the spec it shows
+    something like: `should <matcher> <arguments>`, without the need to give a description when declaring
+    the example, as with `it`.
   - `example`: useful for data specific specs.
+- `subject` is an alias for `let(:subject)`
+- `is_expected` is an alias for `expect(subject)`.
+- `should` is an alias for `expect(subject).to`.
+- `should_not` is an alias for `expect(subject).to_not` or `expect(subject).not_to`.
+
+  ```ruby
+  subject { SomeClass.new }
+  it { is_expected.to include(:some_attribute) }
+  it { should_not include(:something_else) }
+  ```
+
+See [Auto generated example descriptions](#auto-generated-example-descriptions).
 
 - You can use them in any way you want. The idea is **getting the words right**, which is crucial for BDD.
 
@@ -338,7 +353,11 @@ Execute the tests:
 bin/rspec
 ```
 
-Enjoy TDD.
+To pick up changes:
+
+```bash
+bin/spring stop
+```
 
 ## Sharing code
 ### Mixins
@@ -520,9 +539,12 @@ Create them using `double()`.
   - Useful when your double receives many messages and spelling all of them out is not easy.
   - `double.as_null_object`.
   - Also known as **black hole**.
+
 - **Spy**: Records the messages it receives, so that you can check them later.
   - Created with `spy`.
-  - Allow you to use `have_received` instead of `received`.
+  - Allows you to use `have_received` instead of `received`, which allows you to move expectations
+    to the end of the example, making them more readable, complying with the Act/Arrage/Assert pattern.
+
 - **Fake**: Takes a working implementation but uses some shortcut that makes it not suitable
   for production. For example: an in memory test db, or a network api call that simulates
   some behavior.
@@ -569,11 +591,31 @@ Indicate what its underlying Ruby class is:
     - Useful, for example, when you want to make sure some piece of code doesn't uses a module
       or class or some other constant.
 
-##### Verifying doubles
+#### Verifying doubles
 
 - RSpec has a feature called **verifying doubles**. This helps preventing **fragile mocks**, which is a
   problem where specs pass when they should fail because a method is not implemented, but the mock
   allows it to be used.
+
+### Recommendations
+
+- To avoid brittle specs, use test doubles to decouple them from validation rules, configuration, and
+  other ever-changing specifics of your application.
+
+- Don't use `expect` when `allow` is sufficient.
+
+- **Code smell**: If you find yourself stubbing messages of the subject under test, it's a hint that your
+  subject has more than one responsibility, and it's likely better to split it up into two objects.
+
+- Use the config option `verify_partial_doubles` set to true.
+
+- **Mock only objects you own**: Mocking third-party objects is risky. Your specs might pass when they
+  should fail or the other way around. To avoid this:
+  - Rely on your acceptance specs.
+  - Use a **high-fidelity** fake of the API, if it's possible.
+    - There are gems that provide them for you.
+    - The **VCR** gem helps building high-fidelity fakes for HTTP APIs that don't provide them.
+  - Write your own wrapper around the API and use a double instead of your wrapper.
 
 ## Patterns and Practices
 
@@ -798,7 +840,8 @@ end
 # Would generate the same description for the examples.
 ```
 
-- `subject` is an alias for `let`.
+- `subject` is an alias for `let(:subject)`.
+- `subject(:some_symbol)` is an alias for `let(:some_symbol)`.
 - `specify` is an alias for `it`.
 - `is_expected` is an alias for `expect(subject)`.
 - `should` and `should_not` are aliases for `expect(subject).to` and `expect(subject).not_to`.
