@@ -37,6 +37,7 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
         - [Origin](#origin)
             - [Verifying doubles](#verifying-doubles)
         - [Recommendations](#recommendations)
+            - [Nice talks](#nice-talks)
     - [Patterns and Practices](#patterns-and-practices)
         - [General](#general)
         - [Acceptance/Integration/Unit specs](#acceptanceintegrationunit-specs)
@@ -529,10 +530,12 @@ Create them using `double()`.
   - Best for simulating *query* methods (no side effect).
   - Args given are ignored.
   - `allow(<double object>).to receive().and_return()`
+  - When you assert on state, you're stubbing.
 
 - **Mock**: Expects specific messages; raises an error if if doesn't receive them at the end of the example.
   - Useful to deal with *command* methods (have side effect).
   - `expect(<double object>).to receive()`
+  - When you assert on messages, you're mocking.
 
 - **Null Object**: A benign test module that can stand in for any object; returns itself in response to any
   message.
@@ -612,10 +615,24 @@ Indicate what its underlying Ruby class is:
 - **Mock only objects you own**: Mocking third-party objects is risky. Your specs might pass when they
   should fail or the other way around. To avoid this:
   - Rely on your acceptance specs.
-  - Use a **high-fidelity** fake of the API, if it's possible.
+  - Write your own wrapper around the API and use a double instead of your wrapper.
+    - Write intregration specs to your adapter to make sure you catch problems if the thir-party API changes.
+  - Use a **high-fidelity** fake of the API, if it's necessary, but prefer the wrapper (adapter).
     - There are gems that provide them for you.
     - The **VCR** gem helps building high-fidelity fakes for HTTP APIs that don't provide them.
-  - Write your own wrapper around the API and use a double instead of your wrapper.
+
+- **Mock roles, not objects**: Wanting to mock a concrete object is a design smell, rather, mock its role,
+  that is, its behavior, that is, the messages it will receive.
+
+- Duplicating your production code in your test **is a test smell**. It doesn't mean you should never do it.
+  If it smells, ask yourself if that is really required.
+  - Don't mock boundary objects.
+
+- Only mock peers not internals. Don't mock objects that are internal to an object.
+
+#### Nice talks
+
+- [Why You Don't Get Mock Objects by Gregory Moeck](https://www.youtube.com/watch?v=R9FOchgTtLM).
 
 ## Patterns and Practices
 
