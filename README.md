@@ -12,6 +12,7 @@
 * [2023 - Ruby on Rails lessons learned](./write-ups/lessons-learned-rails.md).
 * [2023 - Ruby lessons learned](./write-ups/lessons-learned-ruby.md).
 * [2023 - RSpec lessons learned](./write-ups/lessons-learned-rspec.md).
+* [2023 - Object-Oriented Design](./write-ups/object-oriented-design.md)
 
 ## About Me
 
