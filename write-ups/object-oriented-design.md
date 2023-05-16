@@ -24,6 +24,11 @@ Addison-Wesley Professional, July 2018; plus other sources in the Internet.
                 - [Isolate multiparameter initialization](#isolate-multiparameter-initialization)
         - [Managing dependency direction](#managing-dependency-direction)
     - [Creating flexible interfaces](#creating-flexible-interfaces)
+        - [Defining interfaces](#defining-interfaces)
+            - [Public interfaces](#public-interfaces)
+            - [Private interfaces](#private-interfaces)
+        - [Designing the public interface](#designing-the-public-interface)
+            - [Using sequence diagrams](#using-sequence-diagrams)
 
 <!-- /TOC -->
 
@@ -369,4 +374,46 @@ Reverse dependencies if it makes sense and you are following the guideline above
 
 Tips here are about methods within a class and how and what to expose to others.
 
-Exposed methods comprise a class' **public interface**.
+### Defining interfaces
+
+#### Public interfaces
+
+The face it presents to the world:
+
+- Reveal its primary responsiblity.
+- Are expected to be invoked by others.
+- Will not change on a whim.
+- Are safe for others to depend on.
+- Are thoroughly documented in the tests.
+
+**Public methods should read like a description of responsibilities**. Remember the "single responsiblity principle"?
+
+#### Private interfaces
+
+Non-public methods. They:
+
+- Handle implementation details.
+- Are not expected to be sent by other objects.
+- Can change for any reason whatsoever.
+- Are unsage for others to depend on.
+- May not even be referenced in the tests.
+
+### Designing the public interface
+
+When you start an application from scratch domain objects are easy to find, but **they are not at the
+design center of your application**. Instead, they are a trap for the unwary. If you fixate on domain
+object, you will tend to coerce behavior into them. Design experts **notice** domain objects without
+concentrating on them; they **focus not on these objects but on the messages that pass between them**.
+These messages are the guides that lead you to discover other objects, ones that are just as necessary
+but far less obvious.
+
+#### Using sequence diagrams
+
+It's a perfect, low-cost way to experiment with objects **and** messages:
+
+- Objects are represented in boxes.
+- Each object has a vertical line.
+- Messages are represented with arrows. The tip of the arrow points to the receiver. This arrow is
+  labeled with the message name.
+- When an object is busy processing a message, it is *active* and its vertical line becomes a rectangle
+  until it's not busy anymore.
