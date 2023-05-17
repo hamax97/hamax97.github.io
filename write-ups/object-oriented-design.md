@@ -29,6 +29,14 @@ Addison-Wesley Professional, July 2018; plus other sources in the Internet.
             - [Private interfaces](#private-interfaces)
         - [Designing the public interface](#designing-the-public-interface)
             - [Using sequence diagrams](#using-sequence-diagrams)
+            - [Ask for "what" instead of telling "how"](#ask-for-what-instead-of-telling-how)
+            - [Seek context independence](#seek-context-independence)
+        - [Rules of thumb for interfaces](#rules-of-thumb-for-interfaces)
+            - [Create explicit interfaces](#create-explicit-interfaces)
+            - [Honor the public interfaces of others](#honor-the-public-interfaces-of-others)
+            - [Minimize context](#minimize-context)
+        - [The Law of Demeter](#the-law-of-demeter)
+            - [Definition](#definition)
 
 <!-- /TOC -->
 
@@ -407,6 +415,13 @@ concentrating on them; they **focus not on these objects but on the messages tha
 These messages are the guides that lead you to discover other objects, ones that are just as necessary
 but far less obvious.
 
+The **transition from class-based design to message-based design is a turning point in your design career**.
+The message-based perspective yields more flexible applications than does the class-based perspective.
+Changing the fundamental design question from “I know I need this class, what should it do?” to “I need to
+send this message, who should respond to it?” is the first step in that direction.
+
+You don't send messages because you have objects, you have objects because you send messages.
+
 #### Using sequence diagrams
 
 It's a perfect, low-cost way to experiment with objects **and** messages:
@@ -417,3 +432,80 @@ It's a perfect, low-cost way to experiment with objects **and** messages:
   labeled with the message name.
 - When an object is busy processing a message, it is *active* and its vertical line becomes a rectangle
   until it's not busy anymore.
+
+The cost of finding missing objects and messages is very low.
+
+Sequence diagrams are experimental and you can discard them. They are a starting point for your
+design.
+
+#### Ask for "what" instead of telling "how"
+
+Instead of driving the behavior of a class through methods in its public interface, implement a single
+public method in this receiver class that drives this behavior:
+
+- The public interface will be drastically reduced.
+- You'll know less about the receiver class.
+- The likelyhood of change in the sender class is reduced given that the receiver class changes.
+
+Trust other objects to do their job, don't try to know **how** they are doing it.
+
+#### Seek context independence
+
+For an object to behave properly it needs a context (dependencies). Try to reduce this context as much as
+possible and to know as less as possible from its dependencies. The key is differentiating **what** from **how**.
+
+### Rules of thumb for interfaces
+
+#### Create explicit interfaces
+
+Methods in the **public** interface should:
+
+- Be explicitly identified as such.
+- Be more about **what** than **how**.
+- Have names that, insofar as you can anticipate, will not change.
+- Prefer keyword arguments.
+
+Indicate which methods are more or less stable using:
+
+- `public`, `private` and `protected`.
+- You can also use a naming convention for private methods, something like: `_method_name`.
+
+#### Honor the public interfaces of others
+
+Try very hard to **not use** another class' private methods.
+
+A dependency on a private method of an external framework is a form of technical debt. Avoid these
+dependencies.
+
+If you **must** depend on a private interface isolate this dependency.
+
+#### Minimize context
+
+Construct public interfaces with an eye toward minimizing the context they require from others.
+
+Keep the what versus how distinction in mind; create public methods that allow senders to get
+what they want without knowing how your class implements its behavior.
+
+### The Law of Demeter
+
+Set of coding rules that results in loosely coupled objects.
+
+You will benefit from knowing about responsiblities, dependencies, and interfaces before reading this.
+
+#### Definition
+
+It prohibits routing a message to a third object via a second object of a different type:
+
+- "only talk to your immediate neighbors"
+- "use only one dot"
+
+Example violations: ??
+
+```ruby
+player.world.house.door
+hash.keys.sort.join(',')
+```
+
+- These are colloquially referred to as **train wrecks**.
+
+For a deeper understanding read [this blog](https://blog.testdouble.com/posts/2022-06-15-law-of-demeter).
