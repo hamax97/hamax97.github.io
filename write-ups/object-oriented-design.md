@@ -37,6 +37,11 @@ Addison-Wesley Professional, July 2018; plus other sources in the Internet.
             - [Minimize context](#minimize-context)
         - [The Law of Demeter](#the-law-of-demeter)
             - [Definition](#definition)
+    - [Reduce costs with Duck Typing](#reduce-costs-with-duck-typing)
+        - [Plymorphism backgroung](#plymorphism-backgroung)
+        - [Recognizing hidden Ducks](#recognizing-hidden-ducks)
+        - [Documenting Duck types](#documenting-duck-types)
+        - [Be pragmmatic](#be-pragmmatic)
 
 <!-- /TOC -->
 
@@ -494,6 +499,9 @@ You will benefit from knowing about responsiblities, dependencies, and interface
 
 #### Definition
 
+An object should not "reach through" its collaborators to access **their** collaborators' data, methods,
+or collaborators.
+
 It prohibits routing a message to a third object via a second object of a different type:
 
 - "only talk to your immediate neighbors"
@@ -509,3 +517,37 @@ hash.keys.sort.join(',')
 - These are colloquially referred to as **train wrecks**.
 
 For a deeper understanding read [this blog](https://blog.testdouble.com/posts/2022-06-15-law-of-demeter).
+
+## Reduce costs with Duck Typing
+
+Duck types are public interaces that are not tied to any specific class.
+
+Users of an object need not, and should not, be concerned about its class.
+
+It's not what an object **is** that matters, it's what it **does**.
+
+The ability to tolerate ambiguity about the class of an object is the hallmark of a confident
+designer. Once you begin to treat your objects as if they are defined by their behavior rather
+than by their class, you enter into a new realm of expressive flexible design.
+
+### Plymorphism (backgroung)
+
+The ability of many different objects to respond to the same message. Senders of the message need not
+care about the class of the receiver; receivers supply their own specific version of the behavior.
+
+### Recognizing hidden Ducks
+
+- Case statements that switch on a class.
+- `kind_of?` and `is_a?`
+- `responds_to?`
+
+### Documenting Duck types
+
+The abstracness of the duck types makes them less obvious in the code. Therefore, write docs for them.
+There are no better docs than tests, so write tests for your duck types.
+
+### Be pragmmatic
+
+There are use cases where using `case` or `kind_of` or ..., is valid. For example, when you depend on
+a Ruby class like `Array`. Ruby classes are unlikely to change, so depending on them directly can be
+considered safe.
