@@ -42,6 +42,8 @@ Addison-Wesley Professional, July 2018; plus other sources in the Internet.
         - [Recognizing hidden Ducks](#recognizing-hidden-ducks)
         - [Documenting Duck types](#documenting-duck-types)
         - [Be pragmmatic](#be-pragmmatic)
+    - [Acquiring behavior through inheritance](#acquiring-behavior-through-inheritance)
+        - [Where/when to use inheritance?](#wherewhen-to-use-inheritance)
 
 <!-- /TOC -->
 
@@ -551,3 +553,86 @@ There are no better docs than tests, so write tests for your duck types.
 There are use cases where using `case` or `kind_of` or ..., is valid. For example, when you depend on
 a Ruby class like `Array`. Ruby classes are unlikely to change, so depending on them directly can be
 considered safe.
+
+## Acquiring behavior through inheritance
+
+**Inheritance** is, at its core, a mechanism for **automatic message delegation**. It defines a forwarding
+path for not-understood messages. You define an inheritance relationship between two objects, and the
+forwarding happens automatically. There are different types of inheritance:
+
+- In ***class*ical inheritance** these relationships are defined by creating subclasses. The **class**
+  prefix in classical refers to the **superclass/subclass** mechanism.
+  - There is **multiple inheritance** and **single inheritance**. Ruby provides **single inheritance**.
+- JavaScript has **prototypical inheritance**.
+- Also, Ruby has **modules**.
+
+### Where/when to use inheritance?
+
+- When you have highly related classes that share common behavior but differ along some dimension.
+
+- The objects you are modeling must truly have a generalization-specialization relationship.
+
+- Creating a hierarchy has costs; the best way to minimize these costs is to maximize your chance of
+  **getting the abstraction right** before allowing subclasses to depend on it:
+  - You'll face the trade-off of duplicating code in two classes or going ahead and create an abstraction
+    for those two classes:
+    - If you duplicate code it'll be costly to change if you have to update it frequently.
+    - If you create the abstraction you might have problems if a new specialized class arrives with
+      a new requirement and you are forced to somehow change your already created abstraction and its dependants.
+  - The best way to create an abstract superclass is by pushing code **up** from concrete subclasses bit by bit,
+    instead of moving all behavior to the superclass and pushing down specific behaviors. It's safer this way.
+    You'll avoid having concrete behavior (useful only in one subclass) in the superclass.
+  - Identifying the correct abstraction is easier if you have access to at least three existing concrete
+    classes.
+
+- Use the **template method pattern**. In parent classes (maybe abstract) extract steps of behavior as methods,
+  then let sublcasses implement specifc behavior in those methods.
+  - Raise clear error when there's no implementation defined in a subclass:
+
+    ```ruby
+    def some_method
+      raise NotImplementedError, "#{self.class} must implement some_method"
+    end
+    ```
+
+- **Decouple superclasses and subclasses**:
+  - Forcing a sublcass to know how to interact with its abstract superclass creates a dependency.
+  - Avoid calling `super` from your subclasses, it's like saying the subclass knows the algorithm in
+    the parent class and **depents** on this knowledge.
+  - Other programmers might forget to call `super`.
+  - Rather, send **hook** messages from superclasses. For example, note the hook methods
+    `post_initialize` and `local_behavior`:
+
+    ```ruby
+    class SuperClass
+      def initialize(**args)
+        # ...
+        post_initalize(args)
+      end
+
+      def post_initialize(args)
+        # empty
+      end
+
+      def some_behavior
+        # some cool behavior and then ...
+        local_behavior
+      end
+
+      def local_behavior
+        # empty
+      end
+    end
+
+    class SubClass < SuperClass
+      def post_initialize(args)
+        # some cool behavior with args
+      end
+
+      def local_behavior
+        # some specific behavior that belongs here
+      end
+
+      # now I don't know that much about SuperClass
+    end
+    ```
