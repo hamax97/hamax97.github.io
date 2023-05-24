@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [Lessons learned using Ruby](#lessons-learned-using-ruby)
+    - [Method lookup](#method-lookup)
     - [Complex regular expressions](#complex-regular-expressions)
     - [Exceptions](#exceptions)
     - [Docker](#docker)
@@ -11,6 +12,10 @@
     - [Setup Ruby in VSCode](#setup-ruby-in-vscode)
 
 <!-- /TOC -->
+
+## Method lookup
+
+![ruby-method-lookup](./images/ruby-method-lookup.svg)
 
 ## Complex regular expressions
 

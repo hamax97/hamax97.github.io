@@ -44,6 +44,8 @@ Addison-Wesley Professional, July 2018; plus other sources in the Internet.
         - [Be pragmmatic](#be-pragmmatic)
     - [Acquiring behavior through inheritance](#acquiring-behavior-through-inheritance)
         - [Where/when to use inheritance?](#wherewhen-to-use-inheritance)
+    - [Sharing role behavior with modules](#sharing-role-behavior-with-modules)
+        - [Example](#example)
 
 <!-- /TOC -->
 
@@ -85,6 +87,9 @@ Your code should have the following qualities (TRUE):
 - **Reasonable**: The cost of any change should be proportional to the benefits the change achieves.
 - **Usable**: Existing code should be usable in new and unexpected contexts.
 - **Exemplary**: The code itself should encourage those who change it to perpetuate these qualities.
+
+Objects should manage themselves; they should contain their own behavior. If your interest is in object B,
+you should not be forced to know about object A if your only use of it is to find things out about B.
 
 ## Classes with a single responsibility
 
@@ -568,6 +573,12 @@ forwarding happens automatically. There are different types of inheritance:
 
 ### Where/when to use inheritance?
 
+- Use of classical inheritance is always optional; every problem that is solves can be solved another way.
+  You have to ponder the costs.
+  - You can share **role behavior** with `module`s.
+
+- Only use inheritance for shallow trees.
+
 - When you have highly related classes that share common behavior but differ along some dimension.
 
 - The objects you are modeling must truly have a generalization-specialization relationship.
@@ -620,13 +631,13 @@ forwarding happens automatically. There are different types of inheritance:
       end
 
       def local_behavior
-        # empty
+        # empty or default implementation
       end
     end
 
     class SubClass < SuperClass
       def post_initialize(args)
-        # some cool behavior with args
+        # some cool specific behavior with args that belongs here
       end
 
       def local_behavior
@@ -636,3 +647,61 @@ forwarding happens automatically. There are different types of inheritance:
       # now I don't know that much about SuperClass
     end
     ```
+
+## Sharing role behavior with modules
+
+Use of classical inheritance is always optional; every problem that is solves can be solved another way.
+
+Some problems require sharing behavior among objects that seem unrelated, the relationship that
+unites them is a **role**, the role the objects play.
+
+There exists a relationship between the objects that play the role and object for whom they play the role.
+It's not as vissible, but it exists, therefore dependencies are created, and must be properly managed.
+
+Ruby provides a way to define a named group of methods independent of any class which can be **mixed-in**
+in any object. These mixins are called **modules**.
+
+**Modules** provide a way to add the same set of code to objects of different classes:
+- The methods defined in the module become available via **automatic delegation**.
+
+Be careful, an object that defines a small set of methods still can respond to a lot of messages:
+
+- Those it implements.
+- Those implemented in all objects above it in the hierarchy.
+- Those implemented in any module that has been added to it.
+- Those implemented in all modules added to any object above it in the hierarchy.
+
+### Example
+
+```ruby
+module Restorable
+  def restore
+    restorer.heal(self)
+    local_restoration_behavior
+  end
+
+  def restorer
+    @restorer ||= MagicalRestorer.new
+  end
+
+  def local_restoration_behavior
+    raise NotImplementedError
+  end
+end
+
+class Goblin
+  include Restorable
+
+  def local_restoration_behavior
+    jump.and scream
+  end
+
+  # ...
+end
+
+bolg = Goblin.new
+
+# battle begins ...
+
+bolg.restore
+```
