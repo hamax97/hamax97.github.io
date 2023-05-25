@@ -1,5 +1,12 @@
 # Operating Systems lessons learned
 
+<!-- TOC -->
+
+- [How to calculate memory usage in Unix servers](#how-to-calculate-memory-usage-in-unix-servers)
+    - [node_exporter](#node_exporter)
+
+<!-- /TOC -->
+
 ## How to calculate memory usage in Unix servers
 
 To calculate the percentage of memory used by a server you can use the following formula:

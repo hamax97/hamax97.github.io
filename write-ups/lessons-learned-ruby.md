@@ -2,14 +2,13 @@
 
 <!-- TOC -->
 
-- [Lessons learned using Ruby](#lessons-learned-using-ruby)
-    - [Method lookup](#method-lookup)
-    - [Complex regular expressions](#complex-regular-expressions)
-    - [Exceptions](#exceptions)
-    - [Docker](#docker)
-    - [Memoization in accessors](#memoization-in-accessors)
-    - [&:symbol - Symbol to Proc](#symbol---symbol-to-proc)
-    - [Setup Ruby in VSCode](#setup-ruby-in-vscode)
+- [Method lookup](#method-lookup)
+- [Complex regular expressions](#complex-regular-expressions)
+- [Exceptions](#exceptions)
+- [Docker](#docker)
+- [Memoization in accessors](#memoization-in-accessors)
+- [&:symbol - Symbol to Proc](#symbol---symbol-to-proc)
+- [Setup Ruby in VSCode](#setup-ruby-in-vscode)
 
 <!-- /TOC -->
 
@@ -122,7 +121,8 @@ Settings file `.vscode/settings.json`:
     "auto-close-tag.disableOnLanguage": ["markdown"],
     "ruby.specCommand": "bin/rspec",
     "ruby.specFocusTerminal": false,
-    "ruby.specSaveFile": true
+    "ruby.specSaveFile": true,
+    "markdown-toc.depthFrom": 2
 }
 ```
 

@@ -2,50 +2,61 @@
 
 The principles stated here are mostly a summary of what I found in the book:
 Metz, Sandi. *Practical Object-Oriented Design: An Agile Primer using Ruby, 2nd Ed*.
-Addison-Wesley Professional, July 2018; plus other sources in the Internet.
+Addison-Wesley Professional, July 2018. Some things were extracted verbatim. Except for the code examples,
+none of the principles and practices is my original work.
 
 <!-- TOC -->
 
-- [Object-Oriented Design](#object-oriented-design)
-    - [Background](#background)
-    - [Classes with a single responsibility](#classes-with-a-single-responsibility)
-        - [How to know if a class/method is doing only one thing?](#how-to-know-if-a-classmethod-is-doing-only-one-thing)
-        - [Tips for code that embraces change](#tips-for-code-that-embraces-change)
-    - [Managing dependencies](#managing-dependencies)
-        - [Tips for recognizing dependencies](#tips-for-recognizing-dependencies)
-        - [Disadvantages of tight coupling](#disadvantages-of-tight-coupling)
-        - [Tips for avoiding dependencies](#tips-for-avoiding-dependencies)
-            - [Inject dependencies](#inject-dependencies)
-            - [Isolate dependencies](#isolate-dependencies)
-                - [Isolate instance creation](#isolate-instance-creation)
-                - [Isolate vulnerable external messages](#isolate-vulnerable-external-messages)
-            - [Remove argument-order dependencies](#remove-argument-order-dependencies)
-                - [Explicityly define defaults](#explicityly-define-defaults)
-                - [Isolate multiparameter initialization](#isolate-multiparameter-initialization)
-        - [Managing dependency direction](#managing-dependency-direction)
-    - [Creating flexible interfaces](#creating-flexible-interfaces)
-        - [Defining interfaces](#defining-interfaces)
-            - [Public interfaces](#public-interfaces)
-            - [Private interfaces](#private-interfaces)
-        - [Designing the public interface](#designing-the-public-interface)
-            - [Using sequence diagrams](#using-sequence-diagrams)
-            - [Ask for "what" instead of telling "how"](#ask-for-what-instead-of-telling-how)
-            - [Seek context independence](#seek-context-independence)
-        - [Rules of thumb for interfaces](#rules-of-thumb-for-interfaces)
-            - [Create explicit interfaces](#create-explicit-interfaces)
-            - [Honor the public interfaces of others](#honor-the-public-interfaces-of-others)
-            - [Minimize context](#minimize-context)
-        - [The Law of Demeter](#the-law-of-demeter)
-            - [Definition](#definition)
-    - [Reduce costs with Duck Typing](#reduce-costs-with-duck-typing)
-        - [Plymorphism backgroung](#plymorphism-backgroung)
-        - [Recognizing hidden Ducks](#recognizing-hidden-ducks)
-        - [Documenting Duck types](#documenting-duck-types)
-        - [Be pragmmatic](#be-pragmmatic)
-    - [Acquiring behavior through inheritance](#acquiring-behavior-through-inheritance)
-        - [Where/when to use inheritance?](#wherewhen-to-use-inheritance)
-    - [Sharing role behavior with modules](#sharing-role-behavior-with-modules)
-        - [Example](#example)
+- [Background](#background)
+- [Classes with a single responsibility](#classes-with-a-single-responsibility)
+    - [How to know if a class/method is doing only one thing?](#how-to-know-if-a-classmethod-is-doing-only-one-thing)
+    - [Tips for code that embraces change](#tips-for-code-that-embraces-change)
+- [Managing dependencies](#managing-dependencies)
+    - [Tips for recognizing dependencies](#tips-for-recognizing-dependencies)
+    - [Disadvantages of tight coupling](#disadvantages-of-tight-coupling)
+    - [Tips for avoiding dependencies](#tips-for-avoiding-dependencies)
+        - [Inject dependencies](#inject-dependencies)
+        - [Isolate dependencies](#isolate-dependencies)
+            - [Isolate instance creation](#isolate-instance-creation)
+            - [Isolate vulnerable external messages](#isolate-vulnerable-external-messages)
+        - [Remove argument-order dependencies](#remove-argument-order-dependencies)
+            - [Explicityly define defaults](#explicityly-define-defaults)
+            - [Isolate multiparameter initialization](#isolate-multiparameter-initialization)
+    - [Managing dependency direction](#managing-dependency-direction)
+- [Creating flexible interfaces](#creating-flexible-interfaces)
+    - [Defining interfaces](#defining-interfaces)
+        - [Public interfaces](#public-interfaces)
+        - [Private interfaces](#private-interfaces)
+    - [Designing the public interface](#designing-the-public-interface)
+        - [Using sequence diagrams](#using-sequence-diagrams)
+        - [Ask for "what" instead of telling "how"](#ask-for-what-instead-of-telling-how)
+        - [Seek context independence](#seek-context-independence)
+    - [Rules of thumb for interfaces](#rules-of-thumb-for-interfaces)
+        - [Create explicit interfaces](#create-explicit-interfaces)
+        - [Honor the public interfaces of others](#honor-the-public-interfaces-of-others)
+        - [Minimize context](#minimize-context)
+    - [The Law of Demeter](#the-law-of-demeter)
+        - [Definition](#definition)
+- [Reduce costs with Duck Typing](#reduce-costs-with-duck-typing)
+    - [Plymorphism backgroung](#plymorphism-backgroung)
+    - [Recognizing hidden Ducks](#recognizing-hidden-ducks)
+    - [Documenting Duck types](#documenting-duck-types)
+    - [Be pragmmatic](#be-pragmmatic)
+- [Acquiring behavior through inheritance](#acquiring-behavior-through-inheritance)
+    - [Where/when to use inheritance?](#wherewhen-to-use-inheritance)
+- [Sharing role behavior with modules](#sharing-role-behavior-with-modules)
+    - [Example](#example)
+- [Writing inheritable code](#writing-inheritable-code)
+    - [Antipatterns](#antipatterns)
+    - [Liskov substitution principle](#liskov-substitution-principle)
+    - [Template method pattern](#template-method-pattern)
+    - [Preemptively decouple classes](#preemptively-decouple-classes)
+    - [Create shallow hierarchies](#create-shallow-hierarchies)
+- [Combining objects with composition](#combining-objects-with-composition)
+    - [Composition](#composition)
+    - [Delegation](#delegation)
+    - [Aggregation](#aggregation)
+    - [Composition vs. inheritance](#composition-vs-inheritance)
 
 <!-- /TOC -->
 
@@ -577,7 +588,7 @@ forwarding happens automatically. There are different types of inheritance:
   You have to ponder the costs.
   - You can share **role behavior** with `module`s.
 
-- Only use inheritance for shallow trees.
+- Only use inheritance for shallow hierarchies.
 
 - When you have highly related classes that share common behavior but differ along some dimension.
 
@@ -609,7 +620,7 @@ forwarding happens automatically. There are different types of inheritance:
 - **Decouple superclasses and subclasses**:
   - Forcing a sublcass to know how to interact with its abstract superclass creates a dependency.
   - Avoid calling `super` from your subclasses, it's like saying the subclass knows the algorithm in
-    the parent class and **depents** on this knowledge.
+    the parent class and **depends** on this knowledge.
   - Other programmers might forget to call `super`.
   - Rather, send **hook** messages from superclasses. For example, note the hook methods
     `post_initialize` and `local_behavior`:
@@ -618,7 +629,7 @@ forwarding happens automatically. There are different types of inheritance:
     class SuperClass
       def initialize(**args)
         # ...
-        post_initalize(args)
+        post_initalize(args) # send hook message
       end
 
       def post_initialize(args)
@@ -627,7 +638,7 @@ forwarding happens automatically. There are different types of inheritance:
 
       def some_behavior
         # some cool behavior and then ...
-        local_behavior
+        local_behavior # send hook message
       end
 
       def local_behavior
@@ -671,6 +682,8 @@ Be careful, an object that defines a small set of methods still can respond to a
 - Those implemented in any module that has been added to it.
 - Those implemented in all modules added to any object above it in the hierarchy.
 
+Use inheritance for sharing interfaces. Use modules for sharing behaviors.
+
 ### Example
 
 ```ruby
@@ -705,3 +718,168 @@ bolg = Goblin.new
 
 bolg.restore
 ```
+
+## Writing inheritable code
+
+### Antipatterns
+
+- An object using a variable with name like `type` or `category` to determine what message to send to `self`
+  contains two highly related but slightly different types.
+
+- When a sending object checks the class of the receiving object to determine what message to send, you
+  have overlooked a duck type.
+
+- Having code in an abstract class that applies to some, but not all, subclasses. Same for modules.
+  A subclass might end up implementing an empty method or raising an exception indicating it doesn't
+  implement that behavior.
+
+### Liskov substitution principle
+
+Objects of a superclass should be replaceable with objects of its subclasses without breaking the application.
+
+A subclass should be usable anywhere its superclass would do.
+
+Objects that include modules should be trusted to interchangeably play the module's role.
+
+### Template method pattern
+
+The fundamental coding technique for creating inheritable code is the template method pattern.
+
+In parent classes (maybe abstract) extract steps of behavior as methods, then let sublcasses
+implement specifc behavior in those methods.
+
+See [Where/when to use inheritance](#wherewhen-to-use-inheritance).
+
+### Preemptively decouple classes
+
+Avoid inheritors to send `super`. This imposes in the inheritor the responsiblity of knowing the algorithm.
+
+Use **hook messages** to allow subclasses to participate while removing from them the responsibility
+for knowing the abstract algorithm.
+
+Hook messages are only useful for one-level hierarchies. You'll be forced to use `super` is you have
+at least two levels in your hierarchy.
+
+See [Where/when to use inheritance](#wherewhen-to-use-inheritance).
+
+### Create shallow hierarchies
+
+Shallow, narrow hierarchies are easy to understand.
+
+**Deep hierarchies** define a very long search path for message resolution and provide numerous
+opportunities for objects in that path to add behavior as the message passes by. This makes
+objects in deeper levels to depend on behavior at multiple levels, each of which could change and
+cause issues.
+
+See [Where/when to use inheritance](#wherewhen-to-use-inheritance).
+
+## Combining objects with composition
+
+### Composition
+
+Composition is the act of combining distinct parts into a complex whole such that the whole becomes
+more than the sum of its parts. Music, for example, is composed. Example:
+
+```ruby
+class Elf
+  attr_reader :sword, :shield
+
+  def initialize(sword:, shield:)
+    @sword = sword
+    @shield = shield
+  end
+
+  def attack(target)
+    sword.attack(target)
+  end
+
+  def protect_from(spell)
+    shield.protect_from(spell)
+  end
+end
+
+class MajesticSword
+  # ...
+end
+
+class UnpenetrableShield
+  # ...
+end
+
+Elf.new(sword: MajesticSword.new, shield: UnpenetrableShield.new)
+```
+
+### Delegation
+
+When one object receives a message and merely forwards it to another.
+
+Delegation creates dependencies; the receiving object must recognize the message *and* know where to
+send it.
+
+Ruby offers the `def_delegators` message in the `Forwardable` module. So, instead of this:
+
+```ruby
+# without using Forwardable.
+class Player
+  attr_reader :legs, :hands
+
+  def initialize(legs:, hands:)
+    @legs = legs
+    @hands = hands
+  end
+
+  def jump(height)
+    legs.jump(height)
+  end
+
+  def grab(object)
+    hands.grab(object)
+  end
+end
+```
+
+You can do this:
+
+```ruby
+require 'forwardable'
+
+class Player
+  extend Forwardable
+
+  def_delegators :@legs, jump
+  def_delegators :@hands, grab
+
+  def initialize(legs:, hands:)
+    @legs = legs
+    @hands = hands
+  end
+end
+```
+
+Rails provides the `delegate` method.
+
+### Aggregation
+
+**Composition** describes a *has-a* relationship. Object A has-a object B. Object B cannot exist
+without object A. If object A is destroyed, object B will be destroyed as well.
+
+**Aggregation** describes a *has-a* relationship too, but object B can exist without object A.
+
+### Composition vs. inheritance
+
+**General rule:** Faced with a problem that composition can solve, you should be biased toward doing so.
+If you cannot explicitly defend inheritance as a better solution, use composition. Composition contains
+far fewer built-in dependencies than inheritance; it is very often the best choice.
+
+Inheritance is a better solution when its use provides high rewards for low risk.
+
+**Inheritance** is a *code arrangement technique*. Behavior is dispersed among objects and these objects
+are organized into class relationships such that **automatic delegation of messages invokes the correct
+behavior**:
+
+- For the cost of arranging objects in a hierarchy, you get message delegation for free.
+
+**Composition** reverses this. Objects stand alone and as a result **must explicitly know about and
+delegate messages to one another**:
+
+- Composition allows objects to have structural independence, but at the cost of explicit message delegation.

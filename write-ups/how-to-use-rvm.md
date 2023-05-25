@@ -2,14 +2,13 @@
 
 <!-- TOC -->
 
-- [How to use RVM - Ruby Version Manager](#how-to-use-rvm---ruby-version-manager)
-    - [Install a ruby version](#install-a-ruby-version)
-    - [Create a gemset for a specific project or environment](#create-a-gemset-for-a-specific-project-or-environment)
-    - [Use the gemset whenever you CD into the folder](#use-the-gemset-whenever-you-cd-into-the-folder)
-    - [Get the GEM_HOME environment variable](#get-the-gem_home-environment-variable)
-    - [Get the GET_PATH environment variable](#get-the-get_path-environment-variable)
-    - [Migrate from .rvmrc to .ruby-version it's faster and recommended](#migrate-from-rvmrc-to-ruby-version-its-faster-and-recommended)
-    - [Docs](#docs)
+- [Install a ruby version](#install-a-ruby-version)
+- [Create a gemset for a specific project or environment](#create-a-gemset-for-a-specific-project-or-environment)
+- [Use the gemset whenever you CD into the folder](#use-the-gemset-whenever-you-cd-into-the-folder)
+- [Get the GEM_HOME environment variable](#get-the-gem_home-environment-variable)
+- [Get the GET_PATH environment variable](#get-the-get_path-environment-variable)
+- [Migrate from .rvmrc to .ruby-version it's faster and recommended](#migrate-from-rvmrc-to-ruby-version-its-faster-and-recommended)
+- [Docs](#docs)
 
 <!-- /TOC -->
 
