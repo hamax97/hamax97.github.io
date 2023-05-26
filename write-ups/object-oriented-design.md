@@ -58,6 +58,7 @@ none of the principles and practices is my original work.
     - [Aggregation](#aggregation)
     - [Composition vs. inheritance](#composition-vs-inheritance)
 - [Designing cost-effective tests](#designing-cost-effective-tests)
+    - [Knowing what to test](#knowing-what-to-test)
 
 <!-- /TOC -->
 
@@ -868,9 +869,10 @@ without object A. If object A is destroyed, object B will be destroyed as well.
 
 ### Composition vs. inheritance
 
-**General rule:** Faced with a problem that composition can solve, you should be biased toward doing so.
-If you cannot explicitly defend inheritance as a better solution, use composition. Composition contains
-far fewer built-in dependencies than inheritance; it is very often the best choice.
+> General rule
+> Faced with a problem that composition can solve, you should be biased toward doing so.
+> If you cannot explicitly defend inheritance as a better solution, use composition. Composition contains
+> far fewer built-in dependencies than inheritance; it is very often the best choice.
 
 Inheritance is a better solution when its use provides high rewards for low risk.
 
@@ -899,3 +901,54 @@ delegate messages to one another**:
 
 ## Designing cost-effective tests
 
+Writing well-designed (changeable) code requires you to have three skills:
+
+1. Understand object-oriented design so that you write code that is easy to change. Code that is easy
+   to change **is** well-designed.
+
+2. Be skilled at **refactoring**:
+   - Refactoring is the process of changing a software system in such a way that **it does not alter the
+     external behavior of the code** yet improves the internal structure.
+   - Good design preserves maximum flexibility at minimum cost by putting off decisions at every opportunity,
+     deferring commitments until more specific requirements arrive. When that day comes, refactoring is how
+     you morph the current code structure into one that will accommodate the new requirements.
+
+3. Write high-value tests. Tests give you confidence to refactor constantly. Good tests are written in such
+   a way that changes to the code do not force rewrites of the tests.
+
+### Knowing what to test
+
+Think of an object-oriented application as a series fo messages passing between a set of black boxes.
+
+Dealing with objects as if they are only and exactly the messages to which they respond lets you
+design a changeable application, and it is your understanding of the importance of this perspective
+that allows you to create tests that provide maximum benefit at minimum cost.
+
+Each test is merely another application object that needs to use an existing class. The more the test
+gets coupled to that class, the more entangled the two become and the more vulnerable the test is to unnecessarily
+being forced to change.
+
+The tests you write should be for messages that are defined in public interfaces.
+
+> Tests of state
+> Tests that make assertions about the values that messages return. These messages are **query** messages.
+
+Tests for class `A` should assert state only in the public interface of `A`. Do not assert for state
+from messages sent to `B`'s public interface. `A` should not, and need not, test outgoing messages
+for state.
+
+> General rule
+> Objects should make assertions about state **only** for messages in their own public interfaces.
+
+However, there are outgoing messages that require testing. Messages that have side effects,
+**command** messages.
+
+> Tests of behavior
+> Proving that a message gets sent is a test of behavior, not state, and involves assertions about the
+> number of times, and with what arguments, the message is sent.
+
+Summary:
+
+- Incomming messages should be tested for the state they return.
+- Outgoing **command** messages should be tested to ensure they get sent.
+- Outgoing **query** messages shoud not be tested.
