@@ -57,6 +57,7 @@ none of the principles and practices is my original work.
     - [Delegation](#delegation)
     - [Aggregation](#aggregation)
     - [Composition vs. inheritance](#composition-vs-inheritance)
+- [Designing cost-effective tests](#designing-cost-effective-tests)
 
 <!-- /TOC -->
 
@@ -883,3 +884,18 @@ behavior**:
 delegate messages to one another**:
 
 - Composition allows objects to have structural independence, but at the cost of explicit message delegation.
+
+**More tips**
+
+- Inheritance is specialization.
+- Inheritance is best suited to adding functionally to existing classes when you will use most of the
+  old code and add relatively small amounts of new code.
+- Use composition when the behavior is more than the sum of its parts.
+- Use inheritance for clearly expressing **is-a** relationships. For example, keyboards may differ in
+  appearance, behavior, and some other features, yet they **are** keyboards.
+- Use duck types for **behaves-like-a** relationships.
+- Use composition for **has-a** relationships, and the contained parts are important for the
+  behavior of the container.
+
+## Designing cost-effective tests
+
