@@ -8,6 +8,7 @@
 - [Docker](#docker)
 - [Memoization in accessors](#memoization-in-accessors)
 - [&:symbol - Symbol to Proc](#symbol---symbol-to-proc)
+- [Rubocop](#rubocop)
 - [Setup Ruby in VSCode](#setup-ruby-in-vscode)
 
 <!-- /TOC -->
@@ -72,6 +73,42 @@ Docs: https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby
 
 The operator `&` wraps the method pointed at by `:symbol` into a `Proc`.
 
+## Rubocop
+
+To disable cops or entire departments in specific places of your codebase:
+
+- Disable in a section of code:
+
+```ruby
+# rubocop:disable Layout/LineLength, Style
+[..]
+# rubocop:enable Layout/LineLength, Style
+```
+
+- Disable all cops in a section of code:
+
+```ruby
+# rubocop:disable all
+[..]
+# rubocop:enable all
+```
+
+- Disable cops or departments in a single line:
+
+```ruby
+for x in (0..10) # rubocop:disable Style/For
+```
+
+- Disable cops or departments using the `.rubocop.yml` file:
+
+```yml
+Style/StringLiterals:
+  Enabled: false
+
+AllCops:
+  Exclude:
+    - 'docs/**/'
+```
 ## Setup Ruby in VSCode
 
 Extensions:
@@ -122,7 +159,8 @@ Settings file `.vscode/settings.json`:
     "ruby.specCommand": "bin/rspec",
     "ruby.specFocusTerminal": false,
     "ruby.specSaveFile": true,
-    "markdown-toc.depthFrom": 2
+    "markdown-toc.depthFrom": 2,
+    "files.insertFinalNewline": true
 }
 ```
 
