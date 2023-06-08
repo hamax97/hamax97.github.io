@@ -6,7 +6,7 @@
 - [Complex regular expressions](#complex-regular-expressions)
 - [Exceptions](#exceptions)
 - [Memoization in accessors](#memoization-in-accessors)
-- [&:symbol - Symbol to Proc | &Proc - Proc to Block | Block to Proc](#symbol---symbol-to-proc--proc---proc-to-block--block-to-proc)
+- [&:symbol - Symbol to Proc / &Proc - Proc to Block / Block to Proc](#symbol---symbol-to-proc--proc---proc-to-block--block-to-proc)
 - [Enumerator and Enumerable](#enumerator-and-enumerable)
 - [Docker](#docker)
 - [Rubocop](#rubocop)
@@ -64,10 +64,10 @@ Docs: https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby
 
 ## &:symbol - Symbol to Proc / &Proc - Proc to Block / Block to Proc
 
-<describe>
-  <summary>See the specs</summary>
+<details>
+  <summary>Look at these specs</summary>
   https://github.com/hamax97/hamax97.github.io/blob/398236cc6f9e4cb4ebae46f36ce8fb94e2b818fb/write-ups/ruby/%26_operator_with_procs.rb#L1-L37
-</describe>
+</details>
 
 ## Enumerator and Enumerable
 
