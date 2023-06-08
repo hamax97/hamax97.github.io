@@ -5,9 +5,10 @@
 - [Method lookup](#method-lookup)
 - [Complex regular expressions](#complex-regular-expressions)
 - [Exceptions](#exceptions)
-- [Docker](#docker)
 - [Memoization in accessors](#memoization-in-accessors)
-- [&:symbol - Symbol to Proc](#symbol---symbol-to-proc)
+- [&:symbol - Symbol to Proc | &Proc - Proc to Block | Block to Proc](#symbol---symbol-to-proc--proc---proc-to-block--block-to-proc)
+- [Enumerator and Enumerable](#enumerator-and-enumerable)
+- [Docker](#docker)
 - [Rubocop](#rubocop)
 - [Setup Ruby in VSCode](#setup-ruby-in-vscode)
 
@@ -38,14 +39,6 @@ Use regex literals with the `x` option:
 
 Docs: https://docs.ruby-lang.org/en/master/Exception.html
 
-## Docker
-
-Create a container to test things:
-
-```bash
-docker run --rm -it -h myruby --name myruby ruby:3.2.0 /bin/bash
-```
-
 ## Memoization in accessors
 
 - Use memoization in accessors when needed.
@@ -69,9 +62,24 @@ docker run --rm -it -h myruby --name myruby ruby:3.2.0 /bin/bash
 
 Docs: https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby-and-one-gem/
 
-## &:symbol - Symbol to Proc
+## &:symbol - Symbol to Proc | &Proc - Proc to Block | Block to Proc
 
-The operator `&` wraps the method pointed at by `:symbol` into a `Proc`.
+<describe>
+  <summary>See the specs</summary>
+TODO: add permalink here.
+</describe>
+
+## Enumerator and Enumerable
+
+TODO: Complete this.
+
+## Docker
+
+Create a container to test things:
+
+```bash
+docker run --rm -it -h myruby --name myruby ruby:3.2.0 /bin/bash
+```
 
 ## Rubocop
 
