@@ -62,11 +62,11 @@ Docs: https://docs.ruby-lang.org/en/master/Exception.html
 
 Docs: https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby-and-one-gem/
 
-## &:symbol - Symbol to Proc | &Proc - Proc to Block | Block to Proc
+## &:symbol - Symbol to Proc / &Proc - Proc to Block / Block to Proc
 
 <describe>
   <summary>See the specs</summary>
-TODO: add permalink here.
+  https://github.com/hamax97/hamax97.github.io/blob/398236cc6f9e4cb4ebae46f36ce8fb94e2b818fb/write-ups/ruby/%26_operator_with_procs.rb#L1-L37
 </describe>
 
 ## Enumerator and Enumerable
