@@ -8,11 +8,12 @@
 
 ## Write ups
 
-* [2023 - How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md)
-* [2023 - Ruby on Rails lessons learned](./write-ups/lessons-learned-rails.md)
-* [2023 - Ruby lessons learned](./write-ups/ruby/lessons-learned-ruby.md)
-* [2023 - RSpec lessons learned](./write-ups/lessons-learned-rspec.md)
 * [2023 - Object-Oriented Design](./write-ups/object-oriented-design.md)
+* [2023 - Ruby lessons learned](./write-ups/ruby/lessons-learned-ruby.md)
+* [2023 - Ruby on Rails lessons learned](./write-ups/lessons-learned-rails.md)
+* [2023 - HTTP request/response lifecycle](./write-ups/http-request-response-cycle.md)
+* [2023 - RSpec lessons learned](./write-ups/lessons-learned-rspec.md)
+* [2023 - How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md)
 
 ## About Me
 
