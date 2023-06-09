@@ -66,14 +66,14 @@ Docs: https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby
 ## &:symbol - Symbol to Proc / &Proc - Proc to Block / Block to Proc
 
 <details>
-  <summary>look at these specs</summary>
-  https://github.com/hamax97/hamax97.github.io/blob/398236cc6f9e4cb4ebae46f36ce8fb94e2b818fb/write-ups/ruby/%26_operator_with_procs.rb#l1-l37
+  <summary>Look at these specs:</summary>
+  https://github.com/hamax97/hamax97.github.io/blob/398236cc6f9e4cb4ebae46f36ce8fb94e2b818fb/write-ups/ruby/%26_operator_with_procs.rb#L1-L37
 </details>
 
 ## dup vs. clone
 
 <details>
-  <summary>look at these specs</summary>
+  <summary>Look at these specs:</summary>
   https://github.com/hamax97/hamax97.github.io/blob/29c070c534a5489b765af7ec4f79a1db572b9ff7/write-ups/ruby/dup_vs_clone.rb#L1-L94
 </details>
 
