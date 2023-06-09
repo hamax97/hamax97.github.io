@@ -74,7 +74,7 @@ Docs: https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby
 
 <details>
   <summary>look at these specs</summary>
-  TODO: add permalink here
+  https://github.com/hamax97/hamax97.github.io/blob/29c070c534a5489b765af7ec4f79a1db572b9ff7/write-ups/ruby/dup_vs_clone.rb#L1-L94
 </details>
 
 ## Enumerator and Enumerable
