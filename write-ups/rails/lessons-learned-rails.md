@@ -185,7 +185,7 @@ A controller instance is created per request.
 - Rendering a view using `render` will NOT call the action associated to the view, therefore:
   - You have to define the instance variables used by the view.
 
-- Rendering or redirecting won't stop the action, expressions after the rendering will be evaluated.
+- Rendering or redirecting won't stop the action, expressions after the call to rendering will be evaluated.
   - Whatchout, you can't `render`/`redirect` twice.
 
 - What is record identification? https://guides.rubyonrails.org/form_helpers.html#relying-on-record-identification
