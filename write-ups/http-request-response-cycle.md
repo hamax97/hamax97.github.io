@@ -6,6 +6,8 @@
 - [DNS lookup](#dns-lookup)
 - [Web server](#web-server)
 - [App server](#app-server)
+    - [How a web server communicates with Rails?](#how-a-web-server-communicates-with-rails)
+    - [Rack](#rack)
 - [App](#app)
 - [Resources](#resources)
 
@@ -66,12 +68,94 @@ The ip address is returned to the browser if found: `51.52.53.91`.
 
 ## App server
 
-- How this communicates with Rails?
+Useful for:
 
-TODO: continue here ... 11:00 - https://www.youtube.com/watch?v=eK_JVdWOssI
+- Communication with the web framework, for example, Rails.
+- To hand over complex requests to the web framework, the ones that are not just serving static content.
+- To handle thousands of connections.
+- To handle SSL handshakes.
+
+Examples: PUMA / Guinicorn / ...
+
+### How a web server communicates with Rails?
+
+There are multiple ways in which this could be done in Ruby. Read till the final to see what is the
+standard option servers use, **Rack**.
+
+- Rails could register a block with the web server:
+
+  ```ruby
+  server.on_request do |request, response|
+    request.path     # => "/hello"
+    request.headers  # => { host: ... }
+
+    response.status = 200
+    response.body = "Hello World"
+  end
+  ```
+
+- The server could call a method on Rails:
+
+  ```ruby
+  MyApp.handle_request(
+    http_method, # => "GET"
+    http_path,   # => "/hello",
+    http_headers # => #<Headers @host=...>
+  )
+
+  # => #<Response @status=200 @body="Hello World">
+  ```
+
+- The server could place the request information in environment variables:
+
+  ```ruby
+  ENV["REQUEST_INFO"]
+  ENV["PATH_INFO"]
+  ENV["HTTP_HOST"]
+
+  puts "Status: 200 OK"
+  puts
+  puts "Hello World"
+  ```
+
+- **The standard option, Rack**: A unified API to present a way for web servers to communicate with
+  Ruby web frameworks.
+
+### Rack
+
+Rack is a protocol. It states that a web application is an object (commonly called `app`) that:
+
+- Responds to the `call` message.
+- The `call` message receives the `env` hash.
+  - This hash looks like:
+
+    ```ruby
+    env = {
+      "REQUEST_METHOD" => "GET",
+      "PATH_INFO" => "/hello",
+      "HTTP_HOST" => "hamax97.github.io",
+      # ...
+    }
+    ```
+
+- The `call` message returns an array with three things in order (a tuple): `status`, `headers`, and `body`.
+  Like this:
+
+  ```ruby
+  status, headers, body = app.call(env)
+
+  status  # => 200
+  headers # => { "Content-Type" => "text/plain" }
+  body    # => ["Hello World"]
+  ```
+
+  For technical reasons the `body` is an `each`able object, not just a plain string.
+
+  TODO: Find out why `body` needs to be an `each`able object. Perhaps for streaming responses?
 
 ## App
 
+TODO: continue here ... 15:15 - https://www.youtube.com/watch?v=eK_JVdWOssI
 ## Resources
 
 - [RailsConf 2019 - Inside Rails: The lifecycle of a request](https://www.youtube.com/watch?v=eK_JVdWOssI)

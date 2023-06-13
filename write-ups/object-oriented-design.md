@@ -20,7 +20,7 @@ none of the principles and practices is my original work.
             - [Isolate instance creation](#isolate-instance-creation)
             - [Isolate vulnerable external messages](#isolate-vulnerable-external-messages)
         - [Remove argument-order dependencies](#remove-argument-order-dependencies)
-            - [Explicityly define defaults](#explicityly-define-defaults)
+            - [Explicitly define defaults](#explicitly-define-defaults)
             - [Isolate multiparameter initialization](#isolate-multiparameter-initialization)
     - [Managing dependency direction](#managing-dependency-direction)
 - [Creating flexible interfaces](#creating-flexible-interfaces)
@@ -73,7 +73,7 @@ The objectives of OOD are:
 
 Design doesn't matter if your application will never change.
 
-OOD requires you to shift from thinking of the world as a collection of predefined procedure to modeling
+OOD requires you to shift from thinking of the world as a collection of predefined procedures to modeling
 the world as a series of messages that pass between objects.
 
 OOD is about managing dependencies (between classes, between methods, ...). It's a set of coding techniques
@@ -86,8 +86,8 @@ Design is the art of arranging code.
 There are Ruby gems that help you measure how well your code follows OOD principles:
 
 - Bad measurements likely indicate your software is poorly designed.
-- Good measurements, though, are not an indication that you're designing well. You might be applying well
-  design principles to solve the wrong problems.
+- Good measurements, though, are not an indication that you're designing well. You might be applying
+  design principles well to solve the wrong problems.
 
 The foundation of an object-oriented system is the **message** (method).
 
@@ -115,7 +115,7 @@ A class that has more than one responsiblity is difficult to reuse.
 
 ### How to know if a class/method is doing only one thing?
 
-- Try to describe your class in single sentence. If it includes **"and"** or **"or"**, it's likely that your
+- Try to describe your class in a single sentence. If it includes **"and"** or **"or"**, it's likely that your
   class is doing more than one thing.
 
 - When everything in a class is related to its central purpose, the class is said to be **highly cohesive**,
@@ -126,7 +126,7 @@ A class that has more than one responsiblity is difficult to reuse.
 
 ### Tips for code that embraces change
 
-- Depend on behavior, not data.
+- Depend on behavior, not data:
 
   - **Hide instance variables** (even from yourself) using accessor methods. Don't refer to instance
   variables directly.
@@ -167,7 +167,7 @@ Also, avoid over-coupling between your tests and your code. It will be frustrati
 
 Let A and B be two tightly coupled classes:
 
-- If you change class A changes, you might have to change class B.
+- If you change class A, you might have to change class B.
 - If you want to reuse class A, class B will be used as well.
 - If you test class A, you'll be testing class B as well.
 
@@ -277,7 +277,7 @@ class GameEngine
     # ...
     @arg1 = arg1
     @arg2 = arg2
-    @player ||= HumanPlayer.new(arg1, arg2)
+    @player = HumanPlayer.new(arg1, arg2)
   end
 
   def refresh
@@ -347,7 +347,7 @@ Prefer **keyword arguments** over **positional arguments**:
 
 It's better to depend on the name of the arguments than in the order they must be passed.
 
-##### Explicityly define defaults
+##### Explicitly define defaults
 
 If you can define default values for your arguments, whether keyword or positional arguments.
 

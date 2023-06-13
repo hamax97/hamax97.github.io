@@ -86,7 +86,7 @@ TODO: Complete this.
 Create a container to test things:
 
 ```bash
-docker run --rm -it -h myruby --name myruby ruby:3.2.0 /bin/bash
+docker run --rm -it -h myruby --name myruby -v $(pwd):/myapp ruby:3.2.0 /bin/bash
 ```
 
 ## Rubocop
