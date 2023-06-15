@@ -8,6 +8,9 @@
 - [App server](#app-server)
     - [How a web server communicates with Rails?](#how-a-web-server-communicates-with-rails)
     - [Rack](#rack)
+    - [Rackup](#rackup)
+        - [How to use?](#how-to-use)
+        - [Middlewares](#middlewares)
 - [App](#app)
 - [Resources](#resources)
 
@@ -79,7 +82,7 @@ Examples: PUMA / Guinicorn / ...
 
 ### How a web server communicates with Rails?
 
-There are multiple ways in which this could be done in Ruby. Read till the final to see what is the
+There are multiple ways in which this could be done in Ruby. Read until the end to see what is the
 standard option servers use, **Rack**.
 
 - Rails could register a block with the web server:
@@ -153,9 +156,118 @@ Rack is a protocol. It states that a web application is an object (commonly call
 
   TODO: Find out why `body` needs to be an `each`able object. Perhaps for streaming responses?
 
+### Rackup
+
+Interface (wrapper) for running Rack applications. It provides:
+
+- A way to add middlewares to your application.
+- A wrapper around an application server, for example, PUMA or WEBrick.
+
+#### How to use?
+
+Install:
+
+```ruby
+gem install rackup
+```
+
+This is a very simple Rack app:
+
+```ruby
+# app.rb
+
+class HelloWorld
+  def call(env)
+    if env["PATH_INFO"] == "/hello"
+      [200, { "content-type" => "text/plain" }, ["Hello World"]]
+    elsif env["PATH_INFO"] == "/"
+      [301, { "location" => "/hello" }, []]
+    else
+      [404, { "content-type" => "text/plain" }, ["Not Found"]]
+    end
+  end
+end
+```
+
+- Note there's no subclassing from Rack or something like that. Remember, Rack is just a
+  protocol/specification.
+- Also, note that it would be very hard to maintain this if statement in larger applications.
+
+Create a `config.ru` file:
+
+```ruby
+# config.rb
+
+require_relative "app"
+
+run HelloWorld.new
+```
+
+Run:
+
+```bash
+rackup
+```
+
+- This command will read the `config.ru` file and start the server.
+
+#### Middlewares
+
+How about extracting the redirect functionality from the `HelloWorld` app so that it can be
+reused?
+
+```ruby
+class Redirect
+  def initialize(app, from:, to:)
+    @app = app
+    @from = from
+    @to = to
+  end
+
+  def call(env)
+    if env["PATH_INFO"] == @from
+      [301, { "location" => @to }, []]
+    else
+      @app.call(env)
+    end
+  end
+end
+
+class HelloWorld
+  def call(env)
+    if env["PATH_INFO"] == "/hello"
+      [200, { "content-type" => "text/plain" }, ["Hello World"]]
+    else
+      [404, { "content-type" => "text/plain" }, ["Not Found"]]
+    end
+  end
+end
+```
+
+And the `config.ru`:
+
+```ruby
+require_relative "app"
+
+run Redirect.new(
+  HelloWorld.new,
+  from: "/",
+  to: "/hello"
+)
+```
+
+- Now you can reuse the `Redirect` functionality. This is called a **middleware**.
+
+The **middleware** is not a concept in the Rack specification itself, rather, it's a useful technique
+that has been broadly adopted.
+
+Note, though, that it would get really complicated to nest the `HelloWorld.new` inside more and more
+functionalities. Rackup provides `use` in its DSL.
+
+TODO: continue here ... 21:40 - https://www.youtube.com/watch?v=eK_JVdWOssI
+
 ## App
 
-TODO: continue here ... 15:15 - https://www.youtube.com/watch?v=eK_JVdWOssI
 ## Resources
 
 - [RailsConf 2019 - Inside Rails: The lifecycle of a request](https://www.youtube.com/watch?v=eK_JVdWOssI)
