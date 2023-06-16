@@ -435,15 +435,15 @@ Non-public methods. They:
 
 When you start an application from scratch domain objects are easy to find, but **they are not at the
 design center of your application**. Instead, they are a trap for the unwary. If you fixate on domain
-object, you will tend to coerce behavior into them. Design experts **notice** domain objects without
+objects, you will tend to coerce behavior into them. Design experts **notice** domain objects without
 concentrating on them; they **focus not on these objects but on the messages that pass between them**.
 These messages are the guides that lead you to discover other objects, ones that are just as necessary
 but far less obvious.
 
 The **transition from class-based design to message-based design is a turning point in your design career**.
 The message-based perspective yields more flexible applications than does the class-based perspective.
-Changing the fundamental design question from “I know I need this class, what should it do?” to “I need to
-send this message, who should respond to it?” is the first step in that direction.
+Changing the fundamental design question from “I know I need this class, what should it do?” to **“I need to
+send this message, who should respond to it?”** is the first step in that direction.
 
 You don't send messages because you have objects, you have objects because you send messages.
 
@@ -759,7 +759,7 @@ Avoid inheritors to send `super`. This imposes in the inheritor the responsiblit
 Use **hook messages** to allow subclasses to participate while removing from them the responsibility
 for knowing the abstract algorithm.
 
-Hook messages are only useful for one-level hierarchies. You'll be forced to use `super` is you have
+Hook messages are only useful for one-level hierarchies. You'll be forced to use `super` if you have
 at least two levels in your hierarchy.
 
 See [Where/when to use inheritance](#wherewhen-to-use-inheritance).
@@ -870,6 +870,7 @@ without object A. If object A is destroyed, object B will be destroyed as well.
 ### Composition vs. inheritance
 
 > General rule
+>
 > Faced with a problem that composition can solve, you should be biased toward doing so.
 > If you cannot explicitly defend inheritance as a better solution, use composition. Composition contains
 > far fewer built-in dependencies than inheritance; it is very often the best choice.
@@ -918,7 +919,7 @@ Writing well-designed (changeable) code requires you to have three skills:
 
 ### Knowing what to test
 
-Think of an object-oriented application as a series fo messages passing between a set of black boxes.
+Think of an object-oriented application as a series of messages passing between a set of black boxes.
 
 Dealing with objects as if they are only and exactly the messages to which they respond lets you
 design a changeable application, and it is your understanding of the importance of this perspective
@@ -931,6 +932,7 @@ being forced to change.
 The tests you write should be for messages that are defined in public interfaces.
 
 > Tests of state
+>
 > Tests that make assertions about the values that messages return. These messages are **query** messages.
 
 Tests for class `A` should assert state only in the public interface of `A`. Do not assert for state
@@ -938,12 +940,14 @@ from messages sent to `B`'s public interface. `A` should not, and need not, test
 for state.
 
 > General rule
+>
 > Objects should make assertions about state **only** for messages in their own public interfaces.
 
 However, there are outgoing messages that require testing. Messages that have side effects,
 **command** messages.
 
 > Tests of behavior
+>
 > Proving that a message gets sent is a test of behavior, not state, and involves assertions about the
 > number of times, and with what arguments, the message is sent.
 
