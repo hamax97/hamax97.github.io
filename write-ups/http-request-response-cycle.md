@@ -6,12 +6,13 @@
 - [DNS lookup](#dns-lookup)
 - [Web server](#web-server)
 - [App server](#app-server)
-    - [How a web server communicates with Rails?](#how-a-web-server-communicates-with-rails)
+    - [How an app server communicates with Rails?](#how-an-app-server-communicates-with-rails)
     - [Rack](#rack)
     - [Rackup](#rackup)
         - [How to use?](#how-to-use)
         - [Middlewares](#middlewares)
-- [App](#app)
+- [App - Rails](#app---rails)
+    - [Rails.application is a Rack app](#railsapplication-is-a-rack-app)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -80,7 +81,7 @@ Useful for:
 
 Examples: PUMA / Guinicorn / ...
 
-### How a web server communicates with Rails?
+### How an app server communicates with Rails?
 
 There are multiple ways in which this could be done in Ruby. Read until the end to see what is the
 standard option servers use, **Rack**.
@@ -262,12 +263,90 @@ The **middleware** is not a concept in the Rack specification itself, rather, it
 that has been broadly adopted.
 
 Note, though, that it would get really complicated to nest the `HelloWorld.new` inside more and more
-functionalities. Rackup provides `use` in its DSL.
+functionalities. For this, Rackup provides `use` in its DSL:
 
-TODO: continue here ... 21:40 - https://www.youtube.com/watch?v=eK_JVdWOssI
+```ruby
+require_relative "app"
 
-## App
+use Redirect, from: "/", to: "/hello"
 
+run HelloWorld.new
+```
+
+Rack provides some useful middlewares.
+
+## App - Rails
+
+### `Rails.application` is a Rack app
+
+Rails generated a `config.ru` file when you scaffolded your application. It looks like:
+
+```ruby
+# This file is used by Rack-based servers to start the application.
+
+require_relative "config/environment"
+
+run Rails.application
+Rails.application.load_server
+```
+
+`Rails.application` must be an object that follows the Rack specification (a Rack app). Let's try using
+Rails' console:
+
+Run:
+
+```bash
+bin/rails console
+```
+
+Then:
+
+```ruby
+> env = Rack::MockRequest.env_for("http://localhost:3000/articles")
+> env
+#  =>
+# {"rack.version"=>[1, 3],
+#  "rack.input"=>#<StringIO:0x00007f1d6e414a50>,
+#  ...
+#  "REQUEST_METHOD"=>"GET",
+#  "SERVER_NAME"=>"localhost",
+#  "SERVER_PORT"=>"3000",
+#  "QUERY_STRING"=>"",
+#  "PATH_INFO"=>"/articles",
+#  ...}
+
+> status, headers, body = Rails.application.call(env)
+# Started GET "/articles" for  at 2023-06-16 12:34:00 -0500
+# Processing by ArticlesController#index as HTML
+#   Rendering layout layouts/application.html.erb
+#   Rendering articles/index.html.erb within layouts/application
+#   ...
+# Completed 200 OK in 5ms (Views: 4.3ms | ActiveRecord: 0.2ms | Allocations: 2943)
+
+> status
+#  => 200
+
+> headers
+#  =>
+# {"X-Frame-Options"=>"SAMEORIGIN",
+#  "X-XSS-Protection"=>"0",
+#  ...
+#  "Set-Cookie"=>
+#  "_learn_rails_session=...; path=/; HttpOnly; SameSite=Lax",
+#  ...
+#  "Server-Timing"=>
+#   "start_processing.action_controller;dur=0.07, sql.active_record;dur=0.35, instantiation.active_record;dur=0.09, render_template.action_view;dur=1.88, render_layout.action_view;dur=3.85, process_action.action_controller;dur=4.90"}
+
+> puts body.join("")
+# <!DOCTYPE html>
+# <html>
+#   <head>
+#     <title>LearnRails</title>
+#     <meta name="viewport"
+# ...
+```
+
+TODO: Continue here on 26:20: https://www.youtube.com/watch?v=eK_JVdWOssI
 ## Resources
 
 - [RailsConf 2019 - Inside Rails: The lifecycle of a request](https://www.youtube.com/watch?v=eK_JVdWOssI)
