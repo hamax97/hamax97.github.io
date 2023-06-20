@@ -2,6 +2,7 @@
 
 <!-- TOC -->
 
+- [Summary](#summary)
 - [Browser](#browser)
 - [DNS lookup](#dns-lookup)
 - [Web server](#web-server)
@@ -20,7 +21,11 @@
 
 <!-- /TOC -->
 
-![request-response-lifecycle](./images/request-response-lifecycle.svg)
+## Summary
+
+<div align="center">
+  <img src="./images/request-response-lifecycle.svg" alt="Request/Response lifecycle"/>
+</div>
 
 ## Browser
 
