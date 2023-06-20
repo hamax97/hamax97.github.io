@@ -13,9 +13,14 @@
         - [Middlewares](#middlewares)
 - [App - Rails](#app---rails)
     - [Rails.application is a Rack app](#railsapplication-is-a-rack-app)
+    - [How about middlewares?](#how-about-middlewares)
+    - [How does a request get to a controller's action? - The Router](#how-does-a-request-get-to-a-controllers-action---the-router)
+    - [How to make the Router point to whatever app you want?](#how-to-make-the-router-point-to-whatever-app-you-want)
 - [Resources](#resources)
 
 <!-- /TOC -->
+
+![request-response-lifecycle](./images/request-response-lifecycle.svg)
 
 ## Browser
 
@@ -290,7 +295,7 @@ run Rails.application
 Rails.application.load_server
 ```
 
-`Rails.application` must be an object that follows the Rack specification (a Rack app). Let's try using
+`Rails.application` must be an object that follows the Rack specification (a Rack app). Let's try using the
 Rails' console:
 
 Run:
@@ -346,7 +351,140 @@ Then:
 # ...
 ```
 
-TODO: Continue here on 26:20: https://www.youtube.com/watch?v=eK_JVdWOssI
+### How about middlewares?
+
+In the `config.ru` file we don't see any `use` keyword. So, where are the middlewares?
+
+Rails handles middlewares differently. To see the list of middlwares used run:
+
+```bash
+bin/rails middleware
+# use ActionDispatch::HostAuthorization
+# use Rack::Sendfile
+# use ActionDispatch::Static
+# use ActionDispatch::Executor
+# use ActionDispatch::ServerTiming
+# use ActiveSupport::Cache::Strategy::LocalCache::Middleware
+# use Rack::Runtime
+# use Rack::MethodOverride
+# ...
+```
+
+If you want you can remove middlewares if you don't need them, or you can add your own.
+Go to your `config/application.rb` file:
+
+```ruby
+# Disable cookies middleware.
+config.middleware.delete ActionDispatch::Cookies
+config.middleware.delete ActionDispatch::Session::CookieStore
+config.middleware.delete ActionDispatch::Flash
+
+# Add you own middleware.
+config.middleware.use CaptchaEverywhere
+```
+
+### How does a request get to a controller's action? - The Router
+
+The last output line of the command `bin/rails middleware` is something like `run LearnRails::Application.routes`:
+
+```bash
+bin/rails middleware
+# use ...
+# run LearnRails::Application.routes
+```
+
+`LearnRails::Application.routes` should be a Rack app:
+
+```ruby
+> env = Rack::MockRequest.env_for("http://localhost:3000/articles")
+
+> status, headers, body = LearnRails::Application.routes.call(env)
+# Processing by ArticlesController#index as HTML
+#   ...
+# Completed 200 OK in 94ms (Views: 69.9ms | ActiveRecord: 2.0ms | Allocations: 56523)
+```
+
+It is! It matches the url path against a set of rules in your `config/routes.rb`:
+
+```ruby
+Rails.application.routes.draw do
+  root "articles#index"
+
+  get "/articles" => "articles#index"
+  get "/articles/new" => "articles#new"
+  post "/articles" => "articles#create"
+end
+```
+
+Each of these routes expands to: `ArticlesController.action(:index)` or `:new` or `:create` instead of
+`:index`.
+
+`ArticlesController.action` returns a lambda that accepts the `env` hash. Remember lambdas respond
+to `.call`, therefore, this lambda returned is a Rack app.
+
+Want to look at Rail's source code? Look at the
+[`action` class method here](https://github.com/rails/rails/blob/main/actionpack/lib/action_controller/metal.rb#L289).
+
+Therefore, this Rails app could be thought as the following Rack app:
+
+```ruby
+class LearnRails
+  def call(env)
+    verb = env["REQUEST_METHOD"]
+    path = env["PATH_INFO"]
+
+    if verb == "GET" && path == "/articles"
+      ArticlesController.action(:index).call(env)
+    elsif verb == "POST" && path == "/articles"
+      ArticlesController.action(:create).call(env)
+    elsif # ...
+    else
+      [404, {"content-type": "text-plain", ...}, ["Not Found"]]
+    end
+  end
+end
+```
+
+For more details on how the Rails Router works, see
+[RailsConf 2018: Re-graphing The Mental Model of The Rails Router](https://www.youtube.com/watch?v=lEC-QoZeBkM).
+
+### How to make the Router point to whatever app you want?
+
+- You can match your route to a Rack app instead of specifying the controller and action in a string:
+
+  ```ruby
+  Rails.application.routes.draw do
+    get "/articles" => HelloWorld.new
+
+    get "/other-thing" => ->(env) {
+      [200, {"content-type": "text-plain"}, ["Hello World!"]]
+    }
+
+    # redirect(...) returns a Rack app!
+    get "/" => redirect("/articles")
+  end
+  ```
+
+- You can mount a Sinatra app in your Rails app:
+
+  ```ruby
+  Rails.application.routes.draw do
+    # Sidekiq's web app was built with Sinatra.
+    mount Sidekiq::Web, at: "/sidekiq"
+  end
+  ```
+
+- You can use `ArticlesController.action(:your_action)` directly. This is NOT recommended, though.
+  It skips performance optimizations and the auto loader:
+
+  ```ruby
+  Rails.application.routes.draw do
+    get "/articles" => ArticlesController.action(:index)
+    get "/articles/new" => ArticlesController.action(:new)
+    post "/articles" => ArticlesController.action(:create)
+  end
+  ```
+
 ## Resources
 
 - [RailsConf 2019 - Inside Rails: The lifecycle of a request](https://www.youtube.com/watch?v=eK_JVdWOssI)
