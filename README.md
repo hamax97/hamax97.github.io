@@ -1,19 +1,29 @@
 ## Projects
 
-* [2023 - Coordinates Reader - Ruby](projects/coordinates-reader/README.md)
-* [2023 - Contributions to Metasploit Framework - Ruby](projects/metasploit-framework/README.md)
-* [2022 - ASCII Art - NodeJS](projects/ascii-art/README.md)
-* [2022 - P'UNK AVENUE Backend Challenge - NodeJS](projects/punkave-backend-challenge/README.md)
-* [2020 - GSoC - Latency Hiding of Host to Device Memory Transfers - LLVM Project](projects/gsoc2020-llvm/README.md)
+**2023**
+
+* [Coordinates Reader - Ruby - Ruby on Rails](projects/coordinates-reader/README.md)
+* [Contribution to Metasploit Framework - Ruby](projects/metasploit-framework/README.md)
+
+**2022**
+
+* [P'UNK AVENUE Backend Challenge - NodeJS - NestJS](projects/punkave-backend-challenge/README.md)
+* [ASCII Art - NodeJS](projects/ascii-art/README.md)
+
+**2020**
+
+* [Google Summer of Code - Latency Hiding of Host to Device Memory Transfers - LLVM Project - C++](projects/gsoc2020-llvm/README.md)
 
 ## Write ups
 
-* [2023 - Object-Oriented Design](./write-ups/object-oriented-design.md)
-* [2023 - Ruby lessons learned](./write-ups/ruby/lessons-learned-ruby.md)
-* [2023 - Ruby on Rails lessons learned](./write-ups/rails/lessons-learned-rails.md)
-  * [2023 - HTTP request/response lifecycle](./write-ups/rails/http-request-response-cycle.md)
-* [2023 - RSpec lessons learned](./write-ups/lessons-learned-rspec.md)
-* [2023 - How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md)
+**2023**
+
+* [Object-Oriented Design](./write-ups/object-oriented-design.md)
+* [Ruby lessons learned](./write-ups/ruby/lessons-learned-ruby.md)
+* [Ruby on Rails lessons learned](./write-ups/rails/lessons-learned-rails.md)
+  * [HTTP request/response lifecycle](./write-ups/rails/http-request-response-lifecycle.md)
+* [RSpec lessons learned](./write-ups/lessons-learned-rspec.md)
+* [How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md)
 
 ## About Me
 

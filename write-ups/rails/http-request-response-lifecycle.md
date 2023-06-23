@@ -1,4 +1,4 @@
-# HTTP Request/Response Cycle
+# HTTP Request/Response Lifecycle
 
 <!-- TOC -->
 
