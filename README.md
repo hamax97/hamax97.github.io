@@ -22,6 +22,7 @@
 * [Ruby lessons learned](./write-ups/ruby/lessons-learned-ruby.md)
 * [Ruby on Rails lessons learned](./write-ups/rails/lessons-learned-rails.md)
   * [HTTP request/response lifecycle](./write-ups/rails/http-request-response-lifecycle.md)
+  * [HTTP response lifecycle](./write-ups/rails/http-response-lifecycle.md)
 * [RSpec lessons learned](./write-ups/lessons-learned-rspec.md)
 * [How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md)
 
