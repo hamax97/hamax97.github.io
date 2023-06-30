@@ -7,6 +7,8 @@
     - [io-event](#io-event)
     - [timers](#timers)
 - [Async](#async)
+    - [How it's implemented](#how-its-implemented)
+- [Resources](#resources)
 
 <!-- /TOC -->
 
@@ -51,4 +53,138 @@ Collections of one-shot and periodic timers, intended for use with event loops s
 
 ## Async
 
+Composable asynchronous I/O framework for Ruby based on `io-event` and `timers`.
+
+**General featuers**
+
+- Scalable event-driven I/O for Ruby. Thousands of clients per process!
+- Light weight fiber-based concurrency. No need for callbacks!
+- Multi-thread/process containers for parallelism.
+- Growing eco-system of event-driven components.
+
+### How it's implemented
+
+How to make this piece of code execute concurrently instead of waiting for each request:
+
+```ruby
+topics.each do |topic|
+  response = request(topic)
+end
+```
+
+**Verbose implementation**
+
+Start workers:
+
+```ruby
+waiting = {} # waiting list.
+
+topics.each do |topic|
+  Worker do
+    io = connect
+    io.write(topic)
+    while response = io.read_nonblock
+      if response == :wait_readable
+        waiting[io] = Worker.current
+        Worker.yield
+      else
+        break
+      end
+    end
+  end
+end
+```
+
+Event loop to wait for workers to finish:
+
+```ruby
+while waiting.any?
+  ready = IO.select(waiting.keys)
+  ready.each do |io|
+    worker = waiting.delete(io)
+    worker.resume
+  end
+end
+```
+
+**Clean implementation**
+
+Phase 1:
+
+```ruby
+# Scheduler:
+# - provides the interface for waiting on IO and other blocking operations, e.g: sleep.
+# - hides the details of the event loop and the underlying operating system.
+scheduler = Scheduler.new # waiting list.
+
+topics.each do |topic|
+  Worker do
+    io = connect
+    io.write(topic)
+    while response = io.read_nonblock
+      if response == :wait_readable
+        # manages the task without the need for explicit yielding or waiting.
+        scheduler.wait_readable(io)
+      else
+        break
+      end
+    end
+  end
+end
+
+# The entire event loop is encapsulated here.
+scheduler.run
+```
+
+Phase 2:
+
+```ruby
+# The thread local variable scheduler allows us to pass the scheduler as an implicit
+# arguments to methods invoked on the same thread.
+Thread.current.scheduler = Scheduler.new # waiting list.
+
+topics.each do |topic|
+  Fiber.schedule do
+    io = connect
+    io.write(topic)
+    response = io.read
+  end
+end
+
+Thread.current.scheduler.run
+```
+
+1. `io.read` calls internally the C function `rb_io_wait_readable(int f)`. If checks if a thread local
+   scheduler is set, if it is, it defers to its implementation of `rb_io_wait_readable`. This allows you
+   to have a custom scheduler without having to modify your code.
+
+2. `Worker` is replaced with `Fiber.schedule`.
+
+3. The real implementation has more details than this one, but this is essentailly it.
+
+4. This is a proposal that was already merged into master for experimental stuff. It's available though
+   by using the `async` gem.
+
+TODO: Continue here at 17:30: https://www.youtube.com/watch?v=Y29SSOS4UOc&list=PLG-PicXncPwLlJDxW6n99GMsHf6Ol9TKV&index=4
+
 TODO: continue here: https://socketry.github.io/async/index.html
+
+- General features
+- Basics:
+  - Task
+  - Reactor
+  - fiber
+- Tasks
+- Event loop
+- Containers (multi-threads/processes): async-container
+- Best practices:
+  - Can I use a task to wait for others tasks to finish?
+
+## Resources
+
+Talks:
+
+- [List of talks about Async](https://www.youtube.com/playlist?list=PLG-PicXncPwLlJDxW6n99GMsHf6Ol9TKV)
+- [Scalable Concurrency for Ruby 3! - by Samuel Williams @ioquatix](https://www.youtube.com/watch?v=Y29SSOS4UOc)
+- [Asynchronous Rails by Samuel Williams @ioquatix](https://www.youtube.com/watch?v=9tOMD491mFY)
+- [Aync Ruby by Bruno Sutic](https://www.youtube.com/watch?v=LvfQTFNgYbI)

@@ -10,6 +10,11 @@
         - [Found - 302](#found---302)
         - [Moved Permanently - 301](#moved-permanently---301)
 - [The headers](#the-headers)
+    - [Examples](#examples)
+        - [Location](#location)
+        - [Content-Type](#content-type)
+        - [Content-Length](#content-length)
+        - [Set-Cookie](#set-cookie)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -20,7 +25,7 @@
 
 ## The response array
 
-All Rack-compliant web frameworks must respond to a request with a **response array**: `[status, headers, body].
+All Rack-compliant web frameworks must respond to a request with a **response array**: `[status, headers, body]`.
 
 - `status` is the status code.
 - `headers` is a hash with the headers.
@@ -121,7 +126,51 @@ end
 
 ## The headers
 
-TODO: continue here at 09:30 -> https://www.youtube.com/watch?v=edjzEYMnrQw
+Although status codes convey important information, often more information is required.
+
+Headers are additional information about a response/request. For example:
+
+- How long to cache the response.
+- Metadata to use in a JavaScript client app.
+
+Second element in the response array.
+
+### Examples
+
+#### Location
+
+Tells the client where to find the requested content:
+
+```
+Location: https://some.other.resource/path
+```
+
+#### Content-Type
+
+Tells the client the content type of the response:
+
+```
+Content-Type: text/plain
+Content-Type: application/json
+Content-Type: multipart/form-data; boundary...
+```
+
+#### Content-Length
+
+Tells how many bytes are in the response body.
+
+You could send a `HEAD` request to the server and it could respond with `200 OK` and with a
+`Content-Length` header, but without the body. This way you could build a load percentage bar.
+
+```
+Content-Length: 12
+```
+
+Added automatically by the Rack content middleware.
+
+#### Set-Cookie
+
+TODO: continue here at 11:05 -> https://www.youtube.com/watch?v=edjzEYMnrQw
 
 ## Resources
 

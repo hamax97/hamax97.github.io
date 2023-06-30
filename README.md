@@ -26,6 +26,7 @@
   * [HTTP response lifecycle](./write-ups/rails/http-response-lifecycle.md)
 * [RSpec lessons learned](./write-ups/lessons-learned-rspec.md)
 * [How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md)
+* [How OAuth 2 works](./write-ups/how-oauth2-works.md)
 
 ## About Me
 
