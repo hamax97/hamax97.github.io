@@ -15,6 +15,7 @@
         - [Content-Type](#content-type)
         - [Content-Length](#content-length)
         - [Set-Cookie](#set-cookie)
+        - [Cache-Control](#cache-control)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -135,6 +136,12 @@ Headers are additional information about a response/request. For example:
 
 Second element in the response array.
 
+For headers not managed by any of your middlewares you can use:
+
+```ruby
+response.headers['HEADER NAME'] = 'some value'
+```
+
 ### Examples
 
 #### Location
@@ -170,7 +177,69 @@ Added automatically by the Rack content middleware.
 
 #### Set-Cookie
 
-TODO: continue here at 11:05 -> https://www.youtube.com/watch?v=edjzEYMnrQw
+Contains a semi-colon separated key-value string representing the cookies shared between the server
+and the browser.
+
+Examples:
+
+- There are cookies to track a user's request accross a session.
+- There are cookies to help the server remember a user's action or preferences.
+- Tacking cookies help tracking what websites you visitted. This helps advertisement companies to show
+  what could be of interest to you.
+
+These cookies are managed in Rails with the gem called `cookiejar`.
+
+#### Cache-Control
+
+You can instruct your browser to cache entire HTTP responses so that next time they are shown
+more quickly.
+
+You can enable cachin in Rails using:
+
+```bash
+bin/rails dev:cache
+```
+
+**Cache forever**
+
+If you want your response to be cached for ever use `http_cache_forever`:
+
+```ruby
+class ArticlesController < ApplicationController
+  def show
+    http_cache_forever { render :show }
+  end
+  # ...
+end
+```
+
+Which will result in the header:
+
+```
+Cache-Control: max-age=3155695200, private
+```
+
+- `max-age` is a value in seconds, in this case it is the same as 1 century.
+- `private` indicates that this resource is to preferred to be cached by the user's browser and not
+  by any proxies in the path to the browser.
+
+> Question
+>
+> The browser is still making the request to Rails, but Rails answers with 304 Not Modified.
+> Who controls the cache, the browser or Rails?
+
+**Cache forever publicly**
+
+```ruby
+class ArticlesController < ApplicationController
+  def show
+    http_cache_forever(public: true) { render :show }
+  end
+  # ...
+end
+```
+
+TODO: continue here at 13:38 -> https://www.youtube.com/watch?v=edjzEYMnrQw
 
 ## Resources
 
