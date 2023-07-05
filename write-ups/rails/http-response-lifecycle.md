@@ -16,6 +16,7 @@
         - [Content-Length](#content-length)
         - [Set-Cookie](#set-cookie)
         - [Cache-Control](#cache-control)
+    - [Cache-Control: Default behavior in Rails](#cache-control-default-behavior-in-rails)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -194,7 +195,7 @@ These cookies are managed in Rails with the gem called `cookiejar`.
 You can instruct your browser to cache entire HTTP responses so that next time they are shown
 more quickly.
 
-You can enable cachin in Rails using:
+You can enable caching in Rails using:
 
 ```bash
 bin/rails dev:cache
@@ -220,13 +221,36 @@ Cache-Control: max-age=3155695200, private
 ```
 
 - `max-age` is a value in seconds, in this case it is the same as 1 century.
-- `private` indicates that this resource is to preferred to be cached by the user's browser and not
+- `private` indicates that this resource is preferred to be cached by the user's browser and not
   by any proxies in the path to the browser.
 
 > Question
 >
 > The browser is still making the request to Rails, but Rails answers with 304 Not Modified.
 > Who controls the cache, the browser or Rails?
+
+Process:
+
+  - The browser sends the first request. It receives a 200 OK, together with the body, and in the headers
+    there are the following important headers:
+
+    - `ETag` header (entity tag), which is a string for differentiating between multiple representations
+      of the same resource.
+    - `Cache-Control`, as explained above.
+
+  - The browser caches the resource and its `ETag` with it.
+  - The next time the browser requests the same resource, it will make a **conditional request**, that is,
+    it will include the headers:
+
+   - `If-None-Match`, set to a list of `ETag`s, in this case to the `ETag` of the resource requested. If
+     the server has an `ETag` that matches it will return `304 Not Modified`.
+
+   - `If-Modified-Since`, set to a date, if the resource hasn't been modified since the specified date,
+     the server will return `304 Not Modified`.
+
+  - If this process is not followed, every time you request the same resource, you'll get a 200 OK together with the
+    the body, no matter if the server sent the `Cache-Control` header. It is then, responsibility of the client
+    to handle this appropiately.
 
 **Cache forever publicly**
 
@@ -239,7 +263,23 @@ class ArticlesController < ApplicationController
 end
 ```
 
-TODO: continue here at 13:38 -> https://www.youtube.com/watch?v=edjzEYMnrQw
+**Cache for specific amounts of time**
+
+```ruby
+class ArticlesController < ApplicationController
+  def show
+    @articles = Article.all
+    :expires_in 1.second, public: false
+  end
+  # ...
+end
+```
+
+### Cache-Control: Default behavior in Rails
+
+- For Dynamic content: TODO: continue here at 15:40 -> https://www.youtube.com/watch?v=edjzEYMnrQw
+- For static content (css, js, images): immutable, cache busting
+  - Look for the immutable directive: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
 
 ## Resources
 

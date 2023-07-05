@@ -7,7 +7,9 @@
     - [io-event](#io-event)
     - [timers](#timers)
 - [Async](#async)
-    - [How it's implemented](#how-its-implemented)
+    - [How is the Fiber-scheduler implemented](#how-is-the-fiber-scheduler-implemented)
+    - [Task](#task)
+    - [Non-blocking reactor](#non-blocking-reactor)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -62,7 +64,7 @@ Composable asynchronous I/O framework for Ruby based on `io-event` and `timers`.
 - Multi-thread/process containers for parallelism.
 - Growing eco-system of event-driven components.
 
-### How it's implemented
+### How is the Fiber-scheduler implemented
 
 How to make this piece of code execute concurrently instead of waiting for each request:
 
@@ -165,18 +167,28 @@ Thread.current.scheduler.run
 4. This is a proposal that was already merged into master for experimental stuff. It's available though
    by using the `async` gem.
 
+5. Non-blocking IO is available by using the same IO libraries when used inside `Async` tasks.
+
+### Task
+
+The core abstraction of `async`:
+
+- It's a Fiber-based mechanism for concurrency.
+- Tasks execute synchronously from top-to bottom.
+
+### Non-blocking reactor
+
+It's at the core of `async`:
+
+- It implements the event loop.
+- Supports multiple blocking operations: IO, timers, queues, semaphores.
+- Blocking operations yield control back to the reactor which schedules other tasks to continue
+  their operations.
+
 TODO: Continue here at 17:30: https://www.youtube.com/watch?v=Y29SSOS4UOc&list=PLG-PicXncPwLlJDxW6n99GMsHf6Ol9TKV&index=4
 
 TODO: continue here: https://socketry.github.io/async/index.html
 
-- General features
-- Basics:
-  - Task
-  - Reactor
-  - fiber
-- Tasks
-- Event loop
-- Containers (multi-threads/processes): async-container
 - Best practices:
   - Can I use a task to wait for others tasks to finish?
 
