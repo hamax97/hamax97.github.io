@@ -185,17 +185,11 @@ It's at the core of `async`:
 - Blocking operations yield control back to the reactor which schedules other tasks to continue
   their operations.
 
-TODO: Continue here at 17:30: https://www.youtube.com/watch?v=Y29SSOS4UOc&list=PLG-PicXncPwLlJDxW6n99GMsHf6Ol9TKV&index=4
-
-TODO: continue here: https://socketry.github.io/async/index.html
-
-- Best practices:
-  - Can I use a task to wait for others tasks to finish?
-
 ## Resources
 
 Talks:
 
+- [Async docs](https://socketry.github.io/async/index.html)
 - [List of talks about Async](https://www.youtube.com/playlist?list=PLG-PicXncPwLlJDxW6n99GMsHf6Ol9TKV)
 - [Scalable Concurrency for Ruby 3! - by Samuel Williams @ioquatix](https://www.youtube.com/watch?v=Y29SSOS4UOc)
 - [Asynchronous Rails by Samuel Williams @ioquatix](https://www.youtube.com/watch?v=9tOMD491mFY)
