@@ -14,5 +14,4 @@ Tech stack used:
 
 ## Links
 
-- [GitHub](https://github.com/hamax97/ascii-art).
-- [Guide followed](https://robertheaton.com/2018/06/12/programming-projects-for-advanced-beginners-ascii-art/).
+- [GitHub](https://github.com/hamax97/ascii-art)

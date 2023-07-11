@@ -19,6 +19,7 @@
     - [Cache-Control: Default behavior in Rails](#cache-control-default-behavior-in-rails)
         - [For dynamic content](#for-dynamic-content)
         - [For static content - Cache busting](#for-static-content---cache-busting)
+- [The body](#the-body)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -375,7 +376,9 @@ is the **cache busting pattern**.
 For more information on the `Cache-Control` header, visit the official documentation
 [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
 
-- For Dynamic content: TODO: continue here at 20:10 -> https://www.youtube.com/watch?v=edjzEYMnrQw
+## The body
+
+- For The response body: TODO: continue here at 20:10 -> https://www.youtube.com/watch?v=edjzEYMnrQw
 
 ## Resources
 
