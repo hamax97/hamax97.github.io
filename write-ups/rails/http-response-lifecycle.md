@@ -18,6 +18,8 @@
         - [Cache-Control](#cache-control)
     - [Cache-Control: Default behavior in Rails](#cache-control-default-behavior-in-rails)
         - [For dynamic content](#for-dynamic-content)
+        - [For static content - Cache busting](#for-static-content---cache-busting)
+- [Resources](#resources)
 
 <!-- /TOC -->
 
@@ -226,7 +228,7 @@ Cache-Control: max-age=3155695200, private
 
 > Question
 >
-> The browser is still making the request to Rails, but Rails answers with 304 Not Modified.
+> The browser is still making the request to Rails, but Rails responds with `304 Not Modified`.
 > Who has the cache, the browser or Rails? Why is this request sent over and over again?
 
 For an answer to this read below,
@@ -260,7 +262,7 @@ end
 ```ruby
 class ArticlesController < ApplicationController
   def show
-    response.headers["cache-control"] = "no-cache"
+    response.headers["cache-control"] = "no-store"
     @articles = Article.all
   end
   # ...
@@ -276,7 +278,7 @@ end
 
 #### For dynamic content
 
-For dynamic content, HTML for example, Rails by default sends the `Cache-Control` header in the following way:
+For dynamic content (e.g. HTML) Rails by default sends the `Cache-Control` header with the following directives:
 
 ```
 Cache-Control: max-age=0, private, must-revalidate
@@ -299,8 +301,8 @@ How does this revalidation happen?
     - `Cache-Control`, as explained above.
 
   - The browser caches the resource and its `ETag` with it.
-  - The next time the browser requests the same resource, it will make a **conditional request**, that is,
-    it will include the headers:
+  - The next time the browser requests the same resource, that is it **revalidates**, it will make
+    a **conditional request**, that is, it will include the headers:
 
    - `If-None-Match`, set to a list of `ETag`s, in this case to the `ETag` of the resource requested. Rails will
      compute again the body of the response, and if the `ETag` matches it will return `304 Not Modified`.
@@ -315,10 +317,11 @@ How does this revalidation happen?
 
   - If this process is not followed in the client (there's no support), every time you request the same resource,
     you'll get a 200 OK together with the the body, no matter if the server sent the `Cache-Control` header.
-    It is then, responsibility of the client to handle this appropiately.
+    It is therefore responsibility of the client to handle this appropiately.
 
   - To avoid making these **conditional requests** you can use the directive `immutable` which can also be included
-    in the `Cache-Control` header.
+    in the `Cache-Control` header. Read below
+    [Rails' default caching behavior for static content](#for-static-content---cache-busting).
 
 How to use the `stale?` method?
 
@@ -337,13 +340,14 @@ class ArticlesController < ApplicationController
   end
   # ...
 end
+```
 
 - `stale?` under the hood generates a string from the combination of the model name, id, and updated at, then
   runs that string through the `ETag` digest algorithm.
 
 #### For static content - Cache busting
 
-For static content (css, js, images, ...), Rails uses the **cache busting pattern**, that is:
+For static content (css, js, images, ...) Rails uses the **cache busting pattern**, meaning that:
 
 - It adds the header:
 
