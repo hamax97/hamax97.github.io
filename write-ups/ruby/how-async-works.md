@@ -189,6 +189,7 @@ It's at the core of `async`:
 
 Talks:
 
+- [Improving Ruby Concurrency, post by Samuel Williams](https://www.codeotaku.com/journal/2018-06/improving-ruby-concurrency/index)
 - [Async docs](https://socketry.github.io/async/index.html)
 - [List of talks about Async](https://www.youtube.com/playlist?list=PLG-PicXncPwLlJDxW6n99GMsHf6Ol9TKV)
 - [Scalable Concurrency for Ruby 3! - by Samuel Williams @ioquatix](https://www.youtube.com/watch?v=Y29SSOS4UOc)

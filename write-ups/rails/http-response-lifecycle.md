@@ -17,7 +17,7 @@
         - [Set-Cookie](#set-cookie)
         - [Cache-Control](#cache-control)
     - [Cache-Control: Default behavior in Rails](#cache-control-default-behavior-in-rails)
-- [Resources](#resources)
+        - [For dynamic content](#for-dynamic-content)
 
 <!-- /TOC -->
 
@@ -227,30 +227,10 @@ Cache-Control: max-age=3155695200, private
 > Question
 >
 > The browser is still making the request to Rails, but Rails answers with 304 Not Modified.
-> Who controls the cache, the browser or Rails?
+> Who has the cache, the browser or Rails? Why is this request sent over and over again?
 
-Process:
-
-  - The browser sends the first request. It receives a 200 OK, together with the body, and in the headers
-    there are the following important headers:
-
-    - `ETag` header (entity tag), which is a string for differentiating between multiple representations
-      of the same resource.
-    - `Cache-Control`, as explained above.
-
-  - The browser caches the resource and its `ETag` with it.
-  - The next time the browser requests the same resource, it will make a **conditional request**, that is,
-    it will include the headers:
-
-   - `If-None-Match`, set to a list of `ETag`s, in this case to the `ETag` of the resource requested. If
-     the server has an `ETag` that matches it will return `304 Not Modified`.
-
-   - `If-Modified-Since`, set to a date, if the resource hasn't been modified since the specified date,
-     the server will return `304 Not Modified`.
-
-  - If this process is not followed, every time you request the same resource, you'll get a 200 OK together with the
-    the body, no matter if the server sent the `Cache-Control` header. It is then, responsibility of the client
-    to handle this appropiately.
+For an answer to this read below,
+[Rails' default caching behavior for dynamic content](#for-dynamic-content).
 
 **Cache forever publicly**
 
@@ -275,11 +255,123 @@ class ArticlesController < ApplicationController
 end
 ```
 
+**Never-ever cache the resource**
+
+```ruby
+class ArticlesController < ApplicationController
+  def show
+    response.headers["cache-control"] = "no-cache"
+    @articles = Article.all
+  end
+  # ...
+end
+```
+
+- `no-store` is different from `no-cache`, `no-cache` indicates that the response must be revalidated
+  always before using the value in the cache. Why is this useful? Because you could get a `304 Not Modified`.
+  For an explanation on how revalitaion works read below
+  [Rails' default caching behavior](#cache-control-default-behavior-in-rails).
+
 ### Cache-Control: Default behavior in Rails
 
-- For Dynamic content: TODO: continue here at 15:40 -> https://www.youtube.com/watch?v=edjzEYMnrQw
-- For static content (css, js, images): immutable, cache busting
-  - Look for the immutable directive: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+#### For dynamic content
+
+For dynamic content, HTML for example, Rails by default sends the `Cache-Control` header in the following way:
+
+```
+Cache-Control: max-age=0, private, must-revalidate
+```
+
+The `must-revalidate` directive indicates to the client that it must **revalidate** (with a
+**conditional request**) the cached response if it becomes **stale**, that is, if the response has
+been cached for longer than `max-age`.
+
+If you look carefully, `max-age` is set to zero, which indicates that the response will always become
+**stale** immediately.
+
+How does this revalidation happen?
+
+  - The browser sends the first request. It receives a 200 OK, together with the body, and in the headers
+    there are the following important headers:
+
+    - `ETag` header (entity tag), which is a string for differentiating between multiple representations
+      of the same resource. The `Rack::ETag` middleware is what appends this header.
+    - `Cache-Control`, as explained above.
+
+  - The browser caches the resource and its `ETag` with it.
+  - The next time the browser requests the same resource, it will make a **conditional request**, that is,
+    it will include the headers:
+
+   - `If-None-Match`, set to a list of `ETag`s, in this case to the `ETag` of the resource requested. Rails will
+     compute again the body of the response, and if the `ETag` matches it will return `304 Not Modified`.
+
+     > Tip
+     >
+     > To avoid computing an entire body just to compare if the ETag matches, you can use the Rails method
+     > `stale?`, which checks if a model has changed by looking at its updated_at date.
+
+   - `If-Modified-Since`, set to a date, if the resource hasn't been modified since the specified date,
+     the server will return `304 Not Modified`.
+
+  - If this process is not followed in the client (there's no support), every time you request the same resource,
+    you'll get a 200 OK together with the the body, no matter if the server sent the `Cache-Control` header.
+    It is then, responsibility of the client to handle this appropiately.
+
+  - To avoid making these **conditional requests** you can use the directive `immutable` which can also be included
+    in the `Cache-Control` header.
+
+How to use the `stale?` method?
+
+```ruby
+class ArticlesController < ApplicationController
+  def show
+    http_cache_forever(public: true) { render :show }
+    if stale?(@articles)
+      # some expensive calls with @articles
+      # ...
+      render :show
+    else
+      puts "Do nothing"
+      render :show # this will generate a DoubleRender error!!
+    end
+  end
+  # ...
+end
+
+- `stale?` under the hood generates a string from the combination of the model name, id, and updated at, then
+  runs that string through the `ETag` digest algorithm.
+
+#### For static content - Cache busting
+
+For static content (css, js, images, ...), Rails uses the **cache busting pattern**, that is:
+
+- It adds the header:
+
+  ```
+  Cache-Control: public, max-age=31536000, immutable
+  ```
+
+- It appends a hash of the contents of the file to the end of the file name.
+
+The `immutable` directive indicates that the response will not be updated while it's **fresh**.
+
+Whenever the client makes a request for an HTML page, the HTML content includes the path to the
+CSS stylesheets, images, and JavaScript files. Each path has a hash of the content of the file
+appended to it. If one of these files change, the hash will change and the HTML content will point
+to a different file, therefore, making the client request this new file instead of using the one in
+the cache.
+
+Also, the `immutable` directive tells the client to avoid making **conditional requests** to Rails to
+validate if the content has changed, unless the cached content gets **stale**, that is, the time that
+the resource has been in the cache exceeds the value in `max-age`.
+
+Using these two things, (1) the hash of the file appended to its URL, and (2) the `immutable` directive,
+is the **cache busting pattern**.
+
+For more information on the `Cache-Control` header, visit the official documentation
+[here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
+
+- For Dynamic content: TODO: continue here at 20:10 -> https://www.youtube.com/watch?v=edjzEYMnrQw
 
 ## Resources
 
