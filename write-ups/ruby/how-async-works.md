@@ -10,6 +10,7 @@
     - [How is the Fiber-scheduler implemented](#how-is-the-fiber-scheduler-implemented)
     - [Task](#task)
     - [Non-blocking reactor](#non-blocking-reactor)
+    - [Examples](#examples)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -184,6 +185,90 @@ It's at the core of `async`:
 - Supports multiple blocking operations: IO, timers, queues, semaphores.
 - Blocking operations yield control back to the reactor which schedules other tasks to continue
   their operations.
+
+### Examples
+
+**Top-level `Sync` or `Async` will wait implicitly for their child `Task`s to finish**
+
+```ruby
+puts "1. starting sync"
+
+Sync do
+  puts "1. entering sync"
+
+  Async do
+    puts "1. entering async"
+    sleep 0.01
+    puts "2. exiting async"
+  end.wait
+
+  puts "2. exiting sync"
+end
+
+puts "2. outside sync"
+
+# 1. starting sync
+# 1. entering sync
+# 1. entering async
+# 2. exiting async
+# 2. exiting sync
+# 2. outside sync   <- look here
+```
+
+**Nested `Sync` will not wait automatically for nested tasks**
+
+```ruby
+Sync do
+  puts "1. entering sync"
+
+  Sync do
+    puts "1. entering nested sync"
+
+    Async do
+      puts "1. entering async"
+      sleep 0.01
+      puts "2. exiting async"
+    end
+
+    puts "2. exiting nested sync"
+  end
+
+  puts "2. exiting sync"
+end
+
+# 1. entering sync
+# 1. entering nested sync
+# 1. entering async
+# 2. exiting nested sync
+# 2. exiting sync
+# 2. exiting async        <- look here
+```
+
+**Nested `Sync` will wait automatically ONLY for its I/O operations**
+
+```ruby
+Sync do
+  puts "1. entering sync"
+
+  Sync do
+    puts "1. entering nested sync"
+    sleep 0.01
+    puts "2. exiting nested sync"
+  end
+
+  Sync do
+    puts "doing something in second nested sync"
+  end
+
+  puts "2. exiting sync"
+end
+
+# 1. entering sync
+# 1. entering nested sync
+# 2. exiting nested sync                 <- look here
+# doing something in second nested sync
+# 2. exiting sync
+```
 
 ## Resources
 
