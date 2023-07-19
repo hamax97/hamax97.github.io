@@ -146,9 +146,9 @@ Steps:
 
 5. Make sure Bootstrap is working:
 
-  - Create a new controller.
-  - In one of its views add a navigation bar and check if the dropdown works. Copy it from
-    [Bootstrap's docs](https://getbootstrap.com/docs/5.2/components/navbar/).
+   - Create a new controller.
+   - In one of its views add a navigation bar and check if the dropdown works. Copy it from
+     [Bootstrap's docs](https://getbootstrap.com/docs/5.2/components/navbar/).
 
 ## Resources
 
