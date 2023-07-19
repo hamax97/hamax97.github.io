@@ -91,7 +91,7 @@ choice, and Sprockets.
 
 Steps:
 
-2. Install dependencies:
+1. Install dependencies:
 
   - NodeJS:
 
