@@ -93,21 +93,21 @@ Steps:
 
 1. Install dependencies:
 
-  - NodeJS:
+   - NodeJS:
 
-    ```bash
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-    # log out then login to your terminal
-    nvm install --lts
-    ```
+     ```bash
+     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+     # log out then login to your terminal
+     nvm install --lts
+     ```
 
-  - Yarn:
+   - Yarn:
 
-    ```bash
-    # corepack comes with NodeJS >= 16.10
-    corepack enable
-    yarn --version
-    ```
+     ```bash
+     # corepack comes with NodeJS >= 16.10
+     corepack enable
+     yarn --version
+     ```
 
 2. Create gemset and install Rails:
 
