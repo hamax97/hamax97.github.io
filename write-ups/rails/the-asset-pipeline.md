@@ -10,7 +10,7 @@ This is a summary of what the Asset Pipeline is and its important features.
 - [Recommended approaches to the Asset Pipeline](#recommended-approaches-to-the-asset-pipeline)
     - [To avoid node/yarn - The default in Rails 7](#to-avoid-nodeyarn---the-default-in-rails-7)
     - [For building complex assets](#for-building-complex-assets)
-- [How to use?](#how-to-use)
+- [How to setup?](#how-to-setup)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -74,7 +74,8 @@ Gems needed:
 
 ### For building complex assets
 
-If you have custom requirements with your assets you can use the **bundling gems**, with your bundler of choice and, **sprockets**. `esbuild` is a good bundler option.
+If you have custom requirements with your assets you can use the **bundling gems**, with your bundler
+of choice, and **Sprockets**. `esbuild` is a good bundler option.
 
 The bundling gems are:
 - jsbundling-rails.
@@ -83,13 +84,14 @@ The bundling gems are:
 
 These bundling gems are basically wrappers around `yarn`.
 
-## How to use?
+## How to setup?
 
-To start a new application that uses Bootstrap it's suggested to go with bundling gems, the bundler, and Sprockets.
+To start a new application that uses Bootstrap it's suggested to go with bundling gems, your bundler of
+choice, and Sprockets.
 
 Steps:
 
-0. Install dependencies:
+2. Install dependencies:
 
   - NodeJS:
 
@@ -107,7 +109,7 @@ Steps:
     yarn --version
     ```
 
-1. Create gemset and install Rails:
+2. Create gemset and install Rails:
 
    ```bash
    rvm 3.2.2@bootstrap-project --create
@@ -115,7 +117,7 @@ Steps:
    rvm --ruby-version use 3.2.2@bootstrap-project
    ```
 
-2. Create the application:
+3. Create the application:
 
    ```bash
    gem install rails
@@ -124,7 +126,8 @@ Steps:
 
    - This will install the bundling gems for you together with the bundler `esbuild`.
 
-3. Start the application with bin/dev (it will run both the rails server and yarn in watch mode):
+4. Start the application with `bin/dev`. It will run the rails server together with two processes of yarn:
+   one process will watch for JavaScript changes, the other one will watch for CSS changes:
 
    ```bash
    bin/dev
@@ -140,6 +143,12 @@ Steps:
      ```
 
      Now the binstup is gone. Is this a bug of RVM or the RubyInstaller?
+
+5. Make sure Bootstrap is working:
+
+  - Create a new controller.
+  - In one of its views add a navigation bar and check if the dropdown works. Copy it from
+    [Bootstrap's docs](https://getbootstrap.com/docs/5.2/components/navbar/).
 
 ## Resources
 
