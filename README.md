@@ -14,6 +14,7 @@
 * [Ruby on Rails lessons learned](./write-ups/rails/lessons-learned-rails.md)
   * [HTTP request/response lifecycle](./write-ups/rails/http-request-response-lifecycle.md)
   * [HTTP response lifecycle](./write-ups/rails/http-response-lifecycle.md)
+  * [The Asset Pipeline](./write-ups/rails/the-asset-pipeline.md)
 * [RSpec lessons learned](./write-ups/lessons-learned-rspec.md)
 * [How to use RVM - Ruby Version Manager](./write-ups/how-to-use-rvm.md)
 * [How OAuth 2 works](./write-ups/how-oauth2-works.md)
