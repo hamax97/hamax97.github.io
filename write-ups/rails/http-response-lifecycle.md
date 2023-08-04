@@ -38,7 +38,7 @@ All Rack-compliant web frameworks must respond to a request with a **response ar
 
 Rails is a Rack-compliant web framework.
 
-## The status code
+## 1. The status code
 
 Three-digit number that indicates if the request was successful or not:
 
@@ -129,7 +129,7 @@ end
   end
   ```
 
-## The headers
+## 2. The headers
 
 Although status codes convey important information, often more information is required.
 
@@ -376,9 +376,23 @@ is the **cache busting pattern**.
 For more information on the `Cache-Control` header, visit the official documentation
 [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
 
-## The body
+## 3. The body
 
-- For The response body: TODO: continue here at 20:10 -> https://www.youtube.com/watch?v=edjzEYMnrQw
+A string with the content the client is requesting.
+
+How does know Rails if the content is HTML or JSON or ...?
+
+1. It looks at any explicit file extension in the url. Example: http://an-app.com/resource**.html**
+2. It looks at the `Accept` request header.
+
+   ```
+   # Accept html, but if the resource isn't in HTML format, I'm happy with XML.
+   Accept: text/html, application/xhtml+xml, application/xml
+   ```
+
+3. The `render` method in your controller will look for the template that has the proper extension.
+
+- For The response body: TODO: continue here at 22:14 -> https://www.youtube.com/watch?v=edjzEYMnrQw
 
 ## Resources
 

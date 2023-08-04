@@ -109,7 +109,7 @@ Steps:
      yarn --version
      ```
 
-2. Create gemset and install Rails:
+2. Create gemset:
 
    ```bash
    rvm 3.2.2@bootstrap-project --create
@@ -117,7 +117,7 @@ Steps:
    rvm --ruby-version use 3.2.2@bootstrap-project
    ```
 
-3. Create the application:
+3. Create the application scaffold:
 
    ```bash
    gem install rails
