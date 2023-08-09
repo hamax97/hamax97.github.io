@@ -20,6 +20,7 @@
         - [For dynamic content](#for-dynamic-content)
         - [For static content - Cache busting](#for-static-content---cache-busting)
 - [The body](#the-body)
+    - [Template rendering](#template-rendering)
 - [Resources](#resources)
 
 <!-- /TOC -->
@@ -91,7 +92,7 @@ end
 
   ```
   HTTP/1.1 302 Found
-  Location: http://localhost:3000/articles/new
+  Location: http://localhost:3000/articles/new/location
   Content-Type: text/html
   ...
   ```
@@ -380,19 +381,65 @@ For more information on the `Cache-Control` header, visit the official documenta
 
 A string with the content the client is requesting.
 
-How does know Rails if the content is HTML or JSON or ...?
+How does Rails know if the content is HTML or JSON or ...?
 
 1. It looks at any explicit file extension in the url. Example: http://an-app.com/resource**.html**
-2. It looks at the `Accept` request header.
+2. It looks at the `Accept` request header:
 
-   ```
-   # Accept html, but if the resource isn't in HTML format, I'm happy with XML.
+   ```javascript
+   // Accept html, but if the resource isn't in HTML format, I'm happy with XML.
    Accept: text/html, application/xhtml+xml, application/xml
    ```
 
-3. The `render` method in your controller will look for the template that has the proper extension.
+3. The `render` method in your controller will look for the template that has the proper extension
+   and the `Content-Type` response header will be set.
 
-- For The response body: TODO: continue here at 22:14 -> https://www.youtube.com/watch?v=edjzEYMnrQw
+4. If you don't have a template for a specific extension, you can have a `respond_to` block:
+
+   ```ruby
+   class ArticlesController < ApplicationController
+     def index
+       @articles = Article.all
+       respond_to do |format|
+         format.html { render :index }
+         format.json { render json: @articles }
+       end
+     end
+   end
+   ```
+
+5. Browsers can ignore the `Content-Type` response header and can try to render the response based on the
+   contents of it. This can be disabled by setting the header: `X-Content-Type-Options`, which Rails sets
+   by default to `nosniff`:
+
+   ```
+   X-Content-Type-Options: nosniff
+   ```
+
+### Template rendering
+
+`redirect_to` and `head` don't generate a response with a body.
+
+`render` instead is the only method that generates a response including a body.
+
+How does the `render` method work underneath?
+
+1. It finds the appropiate template.
+2. It replaces all instance variables as appropiate.
+3. Generates the body to be sent to the browser/client.
+
+To accomplish this, Rails generates a `ViewContext` class specific to each controller:
+
+- When this class is initialized, it loops over all instance variables set in the controller
+  and copies them into the `ViewContext` object for use in the template. These instance variables
+  are known as `assigns`.
+
+- This `ViewContext` class includes (as mixins) all the helpers in Rails and in your app, e.g: `link_to`.
+
+- Each template is compiled into an instance method on the `ViewContext` class. Essentially, each template
+  becomes a string concatenation of values.
+
+> How does ERB fit into this `ViewContext` class mechanism?
 
 ## Resources
 
