@@ -11,6 +11,7 @@
 * [Object-Oriented Design](./write-ups/object-oriented-design.md)
 * [Ruby lessons learned](./write-ups/ruby/lessons-learned-ruby.md)
   * [How Async works](./write-ups/ruby/how-async-works.md)
+  * [Amazing articles](./write-ups/ruby/amazing-articles.md)
 * [Ruby on Rails lessons learned](./write-ups/rails/lessons-learned-rails.md)
   * [HTTP request/response lifecycle](./write-ups/rails/http-request-response-lifecycle.md)
   * [HTTP response lifecycle](./write-ups/rails/http-response-lifecycle.md)
