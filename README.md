@@ -26,7 +26,7 @@
 I’m a software engineer passionate about acquiring a deep, bare-bones understanding of technology
 and using that understanding to solve complex and interesting problems. I have 2 years of experience
 testing REST APIs, websites, and event driven architectures using JMeter, Python, and Sitespeed.
-I love nature and hip-hop music.
+I love nature, hip-hop music, and lately I've been enjoying cooking healthy stuff a lot.
 
 <div align="center">
     <img src="./assets/my_face.jpg" alt="my face" style="width: 40%; height: auto; border-radius: 50%"/>
@@ -46,4 +46,4 @@ I love nature and hip-hop music.
 * Computer Science Research Assistant - 6 months in 2020 - [University of Louisville](https://louisville.edu/)
 * Google Summer of Code Student - 3 months in 2020 - [LLVM Project](https://github.com/llvm/llvm-project)
 * Performance Engineer - 1 year 4 months - March 2021 to June 2022 - [Perficient](https://www.perficient.com/)
-* Performance Tester - From July 2022 - [Endava](https://www.endava.com/)
+* Performance Tester - From July 2022 to present - [Endava](https://www.endava.com/)
