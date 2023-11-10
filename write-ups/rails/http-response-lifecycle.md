@@ -24,6 +24,10 @@
 - [Resources](#resources)
 
 <!-- /TOC -->
+    - [Template rendering](#template-rendering)
+- [Resources](#resources)
+
+<!-- /TOC -->
 
 ## Background
 
@@ -189,7 +193,7 @@ Examples:
 
 - There are cookies to track a user's request accross a session.
 - There are cookies to help the server remember a user's action or preferences.
-- Tacking cookies help tracking what websites you visitted. This helps advertisement companies to show
+- Tracking cookies help tracking what websites you visitted. This helps advertisement companies to show
   what could be of interest to you.
 
 These cookies are managed in Rails with the gem called `cookiejar`.
@@ -253,7 +257,7 @@ end
 class ArticlesController < ApplicationController
   def show
     @articles = Article.all
-    :expires_in 1.second, public: false
+    expires_in 1.second, public: false
   end
   # ...
 end
@@ -273,7 +277,7 @@ end
 
 - `no-store` is different from `no-cache`, `no-cache` indicates that the response must be revalidated
   always before using the value in the cache. Why is this useful? Because you could get a `304 Not Modified`.
-  For an explanation on how revalitaion works read below
+  For an explanation on how revalidation works read below
   [Rails' default caching behavior](#cache-control-default-behavior-in-rails).
 
 ### Cache-Control: Default behavior in Rails

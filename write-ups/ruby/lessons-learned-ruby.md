@@ -11,10 +11,10 @@
 - [Enumerator and Enumerable](#enumerator-and-enumerable)
 - [Docker](#docker)
 - [Rubocop](#rubocop)
+- [SQL - PostgreSQL](#sql---postgresql)
 - [Setup Ruby in VSCode](#setup-ruby-in-vscode)
 
 <!-- /TOC -->
-
 ## Method lookup
 
 ![ruby-method-lookup](./images/ruby-method-lookup.svg)
@@ -125,6 +125,15 @@ AllCops:
   Exclude:
     - 'docs/**/'
 ```
+
+## SQL - PostgreSQL
+
+Spin up a container with PostgreSQL:
+
+```bash
+docker run --name mypostgresql -d -p 15432:5432 -v mypostgresql:/var/lib/postgresql/data -e POSTGRES_HOST_AUTH_METHOD=trust postgres
+```
+
 ## Setup Ruby in VSCode
 
 Extensions:

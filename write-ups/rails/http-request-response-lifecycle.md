@@ -172,7 +172,7 @@ Rack is a protocol. It states that a web application is an object (commonly call
 Interface (wrapper) for running Rack applications. It provides:
 
 - A way to add middlewares to your application.
-- A wrapper around an application server, for example, PUMA or WEBrick.
+- A wrapper around multiple application servers, for example, PUMA or WEBrick.
 
 #### How to use?
 
@@ -384,7 +384,7 @@ config.middleware.delete ActionDispatch::Cookies
 config.middleware.delete ActionDispatch::Session::CookieStore
 config.middleware.delete ActionDispatch::Flash
 
-# Add you own middleware.
+# Add your own middleware.
 config.middleware.use CaptchaEverywhere
 ```
 

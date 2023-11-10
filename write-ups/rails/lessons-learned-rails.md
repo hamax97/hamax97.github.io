@@ -18,6 +18,7 @@
 - [How to use Active Storage for local storage](#how-to-use-active-storage-for-local-storage)
 - [How to reset db delete data and have schemas recreated](#how-to-reset-db-delete-data-and-have-schemas-recreated)
 - [Databases SQLite3 and PostgreSQL](#databases-sqlite3-and-postgresql)
+- [Turbo Rails](#turbo-rails)
 
 <!-- /TOC -->
 
@@ -387,3 +388,11 @@ bin/rails db:reset
   bin/rails db:drop # delete databases for all envs
   bin/rails db:truncate_all # truncate all tables
   ```
+
+## Turbo Rails
+
+- When using Turbo, all clicks in `<a></a>` tags are intercepted and instead of a full page render,
+  Turbo will use `fetch()` and replace the current HTML with the fetched HTML. Therefore, if you
+  have any JavaScript file referenced in your HTML, it will NOT be executed again, it's only
+  executed when there's a full page load. If there's any inline JavaScript, it WILL be executed
+  as expected.
