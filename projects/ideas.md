@@ -53,6 +53,8 @@
   * Include daily quotes from the Scriptures or old brothers in the faith as encouragement.
   * How about this technique of writing the first letters: https://www.youtube.com/watch?v=k8k_rNTDjJM
 
+- A web app that helps creating meal plannings and custom recipes.
+
 - A web app that shows in boxes a Rails application and when each box is clicked a more detailed view
 of what's happening pops up.
   * To teach Rails?
