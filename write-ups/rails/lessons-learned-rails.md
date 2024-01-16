@@ -396,3 +396,7 @@ bin/rails db:reset
   have any JavaScript file referenced in your HTML, it will NOT be executed again, it's only
   executed when there's a full page load. If there's any inline JavaScript, it WILL be executed
   as expected.
+
+## Useful posts
+
+- [Everyday performance rules for RoR developers](https://www.rorvswild.com/blog/2023/everyday-performance-rules-for-ruby-on-rails-developers)
