@@ -38,7 +38,7 @@ none of the principles and practices is my original work.
     - [The Law of Demeter](#the-law-of-demeter)
         - [Definition](#definition)
 - [Reduce costs with Duck Typing](#reduce-costs-with-duck-typing)
-    - [Plymorphism backgroung](#plymorphism-backgroung)
+    - [Plymorphism background](#plymorphism-background)
     - [Recognizing hidden Ducks](#recognizing-hidden-ducks)
     - [Documenting Duck types](#documenting-duck-types)
     - [Be pragmmatic](#be-pragmmatic)
@@ -428,7 +428,7 @@ Non-public methods. They:
 - Handle implementation details.
 - Are not expected to be sent by other objects.
 - Can change for any reason whatsoever.
-- Are unsage for others to depend on.
+- Are unsafe for others to depend on.
 - May not even be referenced in the tests.
 
 ### Designing the public interface
@@ -437,7 +437,7 @@ When you start an application from scratch domain objects are easy to find, but 
 design center of your application**. Instead, they are a trap for the unwary. If you fixate on domain
 objects, you will tend to coerce behavior into them. Design experts **notice** domain objects without
 concentrating on them; they **focus not on these objects but on the messages that pass between them**.
-These messages are the guides that lead you to discover other objects, ones that are just as necessary
+These messages are the guides that lead you to discover other objects, the ones that are just as necessary
 but far less obvious.
 
 The **transition from class-based design to message-based design is a turning point in your design career**.
@@ -550,7 +550,7 @@ The ability to tolerate ambiguity about the class of an object is the hallmark o
 designer. Once you begin to treat your objects as if they are defined by their behavior rather
 than by their class, you enter into a new realm of expressive flexible design.
 
-### Plymorphism (backgroung)
+### Plymorphism (background)
 
 The ability of many different objects to respond to the same message. Senders of the message need not
 care about the class of the receiver; receivers supply their own specific version of the behavior.
@@ -586,7 +586,7 @@ forwarding happens automatically. There are different types of inheritance:
 
 ### Where/when to use inheritance?
 
-- Use of classical inheritance is always optional; every problem that is solves can be solved another way.
+- Use of classical inheritance is always optional; every problem that it solves can be solved another way.
   You have to ponder the costs.
   - You can share **role behavior** with `module`s.
 

@@ -24,10 +24,6 @@
 - [Resources](#resources)
 
 <!-- /TOC -->
-    - [Template rendering](#template-rendering)
-- [Resources](#resources)
-
-<!-- /TOC -->
 
 ## Background
 

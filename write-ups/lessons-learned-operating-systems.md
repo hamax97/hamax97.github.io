@@ -89,3 +89,7 @@ Source: [Shaik Anwar](https://www.linkedin.com/feed/update/urn:li:activity:70917
 
     The top command includes many of the metrics we checked earlier. It can be handy to run it to see
     if anything looks wildly different from the earlier commands, which would indicate that load is variable.
+
+## Useful resources
+
+- [How Does Linux Boot Process Work?](https://www.youtube.com/watch?v=XpFsMB6FoOs)

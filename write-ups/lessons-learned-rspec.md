@@ -34,7 +34,6 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
 - [Doubles](#doubles)
     - [Usage mode](#usage-mode)
     - [Origin](#origin)
-        - [Verifying doubles](#verifying-doubles)
     - [Recommendations](#recommendations)
         - [Nice talks](#nice-talks)
 - [Patterns and Practices](#patterns-and-practices)
@@ -64,9 +63,9 @@ Marston, Myron and Ian Dees. *Efective Testing with RSpec 3*. Pragmatic Bookshel
 
 ## Main concepts
 
-- **Example group**: Degined with `RSpec.describe`. Set of related tests.
-- **Example**: defined with `it "..."`. Called `test case` in other frameworks.
-- **Expectation**: lines that have `expect`. Called `assertions` in other frameworks.
+- **Example group**: Defined with `RSpec.describe`. Set of related tests.
+- **Example**: Defined with `it "..."`. Called `test case` in other frameworks.
+- **Expectation**: Lines that have `expect`. Called `assertions` in other frameworks.
 
 - Words used interchangeably, but that have difference nuances:
   - A `test` validates that a bit of code is working properly.
@@ -206,7 +205,7 @@ implement them yet:
 
   When you run this spec, rspec will show `yellow` output, meaning `Not yet implemented`.
 
-- Use `pending` if you wan't to see how the spec fails but don't want it marked as a failure.
+- Use `pending` if you want to see how the spec fails but don't want it marked as a failure.
   Maybe you have something in your mind and don't want to forget it:
 
   ```ruby
@@ -255,7 +254,7 @@ expect(<subject>).to <matcher>, 'custom failure message'
   examples in the group, even if some of them never use the instance variable. That’s inefficient and can
   be quite noticeable when setting up large or expensive objects.
 
-  - You can use helper methods instead with memoization. The `RSpec.describe` block is a Ruby class.
+  - Instead, you can use helper methods with memoization. The `RSpec.describe` block is a Ruby class.
   - For handling the `nil` or `false` problem in memoization you can use the `let` helper method.
   - `let` caches the value if the same example uses it multiple times, but not across examples.
 
@@ -353,7 +352,7 @@ Execute the tests:
 bin/rspec
 ```
 
-To pick up changes:
+To pick up changes in the specs stop Spring:
 
 ```bash
 bin/spring stop
@@ -484,7 +483,7 @@ Types:
 
 Matchers use underneath the Ruby operator `===`, triple equals.
 
-A matcher define a **category** and checks, using `===`, if the value given belongs to that
+A matcher defines a **category** and checks, using `===`, if the value given belongs to that
 category. To express this Ruby does the following:
 
 ```ruby
@@ -545,7 +544,7 @@ Create them using `double()`.
 - **Spy**: Records the messages it receives, so that you can check them later.
   - Created with `spy`.
   - Allows you to use `have_received` instead of `received`, which allows you to move expectations
-    to the end of the example, making them more readable, complying with the Act/Arrage/Assert pattern.
+    to the end of the example, making them more readable, complying with the Arrange/Act/Assert pattern.
 
 - **Fake**: Takes a working implementation but uses some shortcut that makes it not suitable
   for production. For example: an in memory test db, or a network api call that simulates
@@ -564,8 +563,10 @@ Indicate what its underlying Ruby class is:
   - After each example the object is restablished.
   - Using partial doubles is a **code smell** that might lead to you to bad design decissions.
 
-- **Verifying double**: Totally fake like a pure double, but contrains its interface based on a real object
+- **Verifying double**: Totally fake like a pure double, but constrains its interface based on a real object
   like a partial double.
+  - This helps preventing **fragile mocks**, which is a problem where specs pass when they should fail because
+    a method is not implemented, but the mock allows it to be used.
   - It's safer because verifies that the double matches the API it's standing for.
   - Use instead of `double`:
     - `instance_double('<class name>')`
@@ -592,12 +593,6 @@ Indicate what its underlying Ruby class is:
   - Use `hide_const('SomeConst')` to hide the constant.
     - Useful, for example, when you want to make sure some piece of code doesn't uses a module
       or class or some other constant.
-
-#### Verifying doubles
-
-- RSpec has a feature called **verifying doubles**. This helps preventing **fragile mocks**, which is a
-  problem where specs pass when they should fail because a method is not implemented, but the mock
-  allows it to be used.
 
 ### Recommendations
 
@@ -641,7 +636,7 @@ Indicate what its underlying Ruby class is:
 
 - [Better specs](https://www.betterspecs.org/).
 
-- To avoind having test suites that force to bounce back and forth all the time between setup
+- To avoid having test suites that force to bounce back and forth all the time between setup
   and examples, be pragmatic, share setup code only when necessary to increase mantainability and
   reduce noise.
 
