@@ -295,7 +295,7 @@ RSpec.configure do |config|
 
   config.after(:example, pry: true) do |ex|
     require 'pry'
-    biding.pry
+    binding.pry
   end
 end
 ```
