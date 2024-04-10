@@ -58,6 +58,12 @@ Set Ruby version for directoy:
 rbenv local 3.3.0
 ```
 
+Set Ruby version for the shell:
+
+```bash
+rbenv shell 3.3.0
+```
+
 ## Use gemsets
 
 ### Gemset in custom directory
